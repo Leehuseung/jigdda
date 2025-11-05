@@ -127,7 +127,73 @@ app.get('/cage/:id/adminv2', (req, res) => {
 
 // 견사 상세 페이지
 app.get('/cage/:id', (req, res) => {
-    const cageId = req.params.id;
+    const cageId = parseInt(req.params.id, 10);
+
+    // 견사 번호 유효성 검사 (1-60만 허용)
+    if (isNaN(cageId) || cageId < 1 || cageId > 60) {
+        return res.status(404).send(`
+            <!DOCTYPE html>
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>잘못된 접근</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+                        background: #f6f8fa;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                    }
+                    .error-container {
+                        text-align: center;
+                        padding: 40px;
+                        background: #fff;
+                        border-radius: 16px;
+                        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                        max-width: 400px;
+                    }
+                    h1 {
+                        font-size: 48px;
+                        color: #e53935;
+                        margin: 0 0 16px 0;
+                    }
+                    p {
+                        font-size: 18px;
+                        color: #666;
+                        margin: 0 0 24px 0;
+                    }
+                    a {
+                        display: inline-block;
+                        padding: 12px 24px;
+                        background: #667eea;
+                        color: #fff;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        transition: all 0.2s;
+                    }
+                    a:hover {
+                        background: #5568d3;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="error-container">
+                    <h1>404</h1>
+                    <p>잘못된 페이지 접근입니다</p>
+                    <p style="font-size: 14px; color: #999;">견사 번호는 1-60 사이만 유효합니다</p>
+                    <a href="/cages">견사 목록으로 돌아가기</a>
+                </div>
+            </body>
+            </html>
+        `);
+    }
+
     res.render('cage', { cageId });
 });
 
