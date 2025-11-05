@@ -1,0 +1,6 @@
+.idea
+cage_*
+node_modules
+.env
+dogs.json
+CLAUDE.md

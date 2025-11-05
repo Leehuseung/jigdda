@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title><%= cageId %>번 견사 관리</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #f6f8fa;
+        }
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-container img {
+            max-width: 400px;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .no-image-message {
+            padding: 40px 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .upload-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #upload-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #upload-btn:hover {
+            background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+        }
+        #file-input {
+            display: none;
+        }
+        .preview-container {
+            margin-top: 16px;
+            display: none;
+        }
+        .preview-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .upload-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .upload-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .confirm-upload {
+            background: #4caf50;
+            color: white;
+        }
+        .cancel-upload {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="cage-header">
+        <button id="prev-cage" class="nav-btn" aria-label="이전 견사">&lt;</button>
+        <h1 class="cage-title"><%= cageId %>번 견사 관리</h1>
+        <button id="next-cage" class="nav-btn" aria-label="다음 견사">&gt;</button>
+    </div>
+
+    <div class="image-container" id="image-container">
+        <img id="current-image" src="https://jikddaz.s3.ap-northeast-2.amazonaws.com/<%= cageId %>_thumb.jpeg?t=<%= Date.now() %>"
+             alt="<%= cageId %>번 견사 사진"
+             style="display:block;">
+        <div class="no-image-message" id="no-image-message" style="display:none;">불러올 사진이 없습니다</div>
+    </div>
+
+    <div class="upload-section">
+        <button id="upload-btn" type="button">사진 업로드</button>
+        <input type="file" id="file-input" accept="image/*">
+
+        <div class="preview-container" id="preview-container">
+            <div class="upload-actions">
+                <button class="confirm-upload" id="confirm-upload">업로드 하기</button>
+                <button class="cancel-upload" id="cancel-upload">취소</button>
+            </div>
+            <img id="preview-image" class="preview-image" alt="미리보기">
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    const cageId = parseInt("<%= cageId %>", 10);
+    const prevBtn = document.getElementById('prev-cage');
+    const nextBtn = document.getElementById('next-cage');
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const confirmBtn = document.getElementById('confirm-upload');
+    const cancelBtn = document.getElementById('cancel-upload');
+    const currentImage = document.getElementById('current-image');
+    const noImageMessage = document.getElementById('no-image-message');
+
+    let selectedFile = null;
+
+    // 이미지 로드 에러 처리
+    currentImage.onerror = function() {
+        this.style.display = 'none';
+        noImageMessage.style.display = 'block';
+    };
+
+    // 이미지 로드 성공 처리
+    currentImage.onload = function() {
+        this.style.display = 'block';
+        noImageMessage.style.display = 'none';
+    };
+
+    // 버튼 상태 업데이트
+    if (cageId <= 1) {
+        prevBtn.disabled = true;
+    }
+
+    function navigateCage(nextCageId, direction) {
+        const container = document.querySelector('.container');
+        container.classList.add(direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+        window.location.href = `/cage/${nextCageId}/admin`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (cageId > 1) navigateCage(cageId - 1, 'right');
+    });
+
+    nextBtn.addEventListener('click', () => {
+        navigateCage(cageId + 1, 'left');
+    });
+
+    uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            Swal.fire('오류', '이미지 파일만 업로드할 수 있습니다.', 'error');
+            return;
+        }
+
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        selectedFile = null;
+        fileInput.value = '';
+        previewContainer.style.display = 'none';
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+
+        try {
+            const result = await Swal.fire({
+                title: '사진을 업로드할까요?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '네, 업로드할게요!',
+                cancelButtonText: '아니요'
+            });
+
+            if (!result.isConfirmed) return;
+
+            Swal.fire({
+                title: '업로드 중...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const response = await fetch(`/cage/${cageId}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('업로드 실패');
+            }
+
+            const data = await response.json();
+
+            await Swal.fire('업로드 완료!', '사진이 성공적으로 업로드되었습니다.', 'success');
+
+            // 이미지 새로고침 (캐시 방지)
+            currentImage.style.display = 'block';
+            noImageMessage.style.display = 'none';
+            currentImage.src = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/${cageId}_thumb.jpeg?t=${Date.now()}`;
+
+            // 미리보기 초기화
+            selectedFile = null;
+            fileInput.value = '';
+            previewContainer.style.display = 'none';
+
+        } catch (error) {
+            await Swal.fire('오류', '사진 업로드에 실패했습니다.', 'error');
+        }
+    });
+</script>
+</body>
+</html>

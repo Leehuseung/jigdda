@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title><%= cageId %>번 견사</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #f6f8fa;
+        }
+        .container {
+            min-height: auto;
+            padding-bottom: 20px;
+            background: #f6f8fa;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f6f8fa;
+        }
+        .close-btn {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 28px;
+            color: #3a3a3a;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-btn:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+        }
+        .close-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-btn {
+            background: #ffffff;
+            color: #3a3a3a;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover {
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+        }
+        .nav-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .nav-btn:disabled {
+            background: #e0e0e0;
+            color: #9e9e9e;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+        .page-title {
+            padding: 0 16px 16px 16px;
+            background: #f6f8fa;
+            box-sizing: border-box;
+        }
+        .page-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: left;
+            letter-spacing: -0.3px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #667eea;
+            box-sizing: border-box;
+        }
+        .dogs-container {
+            padding: 0 16px;
+        }
+        .dogs-gallery-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .scroll-indicator {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(102, 126, 234, 0.9);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        .scroll-indicator:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        .scroll-indicator.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .dogs-gallery {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .dogs-gallery.single-dog {
+            justify-content: center;
+        }
+        .walk-status-message {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .dogs-gallery::-webkit-scrollbar {
+            display: none;
+        }
+        .dog-thumbnail {
+            flex-shrink: 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 8px;
+            border-radius: 16px;
+        }
+        .dog-thumbnail:active {
+            transform: scale(0.95);
+        }
+        .dog-thumbnail.selected {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        .dog-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: #f5f5f5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 8px;
+            transition: box-shadow 0.2s;
+        }
+        .dog-thumbnail.selected .dog-photo {
+            box-shadow: 0 0 0 3px #667eea;
+        }
+        .dog-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #3a3a3a;
+        }
+        .dog-detail {
+            display: none;
+            background: #fff;
+            border-radius: 16px;
+            margin-top: 24px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+        .dog-detail.active {
+            display: block;
+        }
+        .dog-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .dog-detail-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+        .dog-info {
+            flex: 1;
+        }
+        .dog-detail-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3a3a3a;
+            margin: 0;
+        }
+        .walk-btn {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+        .walk-btn.loaded {
+            opacity: 1;
+        }
+        .walk-btn:active {
+            transform: scale(0.98);
+        }
+        .walk-records-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #3a3a3a;
+            margin: 16px 0 12px 0;
+        }
+        .walk-records {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background: #f9f9f9;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .walk-records li {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e3e7ee;
+            text-align: center;
+            font-size: 15px;
+            color: #2d2d2d;
+            position: relative;
+        }
+        .walk-records li:last-child {
+            border-bottom: none;
+        }
+        .no-dogs {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .no-dogs a {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="top-nav">
+    <button id="close-btn" class="close-btn" aria-label="닫기">&times;</button>
+    <div class="nav-buttons">
+        <button id="prev-cage" class="nav-btn" aria-label="이전 견사">&lt;</button>
+        <button id="next-cage" class="nav-btn" aria-label="다음 견사">&gt;</button>
+    </div>
+</div>
+<div class="page-title">
+    <h1><%= cageId %>번 견사</h1>
+</div>
+
+<div class="container">
+    <div class="dogs-container">
+        <div class="dogs-gallery-wrapper" id="dogs-gallery-wrapper">
+            <div class="dogs-gallery" id="dogs-gallery">
+                <div class="no-dogs">
+                    <p>강아지가 없습니다</p>
+                    <a href="/cage/<%= cageId %>/adminv2">강아지 추가하기</a>
+                </div>
+            </div>
+            <button class="scroll-indicator hidden" id="scroll-indicator">&gt;</button>
+        </div>
+        <div class="walk-status-message" id="walk-status-message"></div>
+        <div id="dog-detail-container"></div>
+    </div>
+</div>
+
+<script type="module">
+    const cageId = <%= cageId %>;
+    const dogsGallery = document.getElementById('dogs-gallery');
+    const dogDetailContainer = document.getElementById('dog-detail-container');
+    const closeBtn = document.getElementById('close-btn');
+    const prevBtn = document.getElementById('prev-cage');
+    const nextBtn = document.getElementById('next-cage');
+    let selectedDogId = null;
+
+    closeBtn.addEventListener('click', () => {
+        // 현재 견사 ID를 저장하고 목록으로 이동
+        sessionStorage.setItem('lastViewedCage', cageId);
+        window.location.href = '/cages';
+    });
+
+    // 버튼 상태 업데이트
+    if (cageId <= 1) {
+        prevBtn.disabled = true;
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (cageId > 1) window.location.href = `/cagev2/${cageId - 1}`;
+    });
+
+    nextBtn.addEventListener('click', () => {
+        window.location.href = `/cagev2/${cageId + 1}`;
+    });
+
+    async function showDogDetail(dogId) {
+        selectedDogId = dogId;
+
+        // 모든 썸네일의 선택 상태 해제
+        document.querySelectorAll('.dog-thumbnail').forEach(el => {
+            el.classList.remove('selected');
+        });
+
+        // 모든 상세 페이지 숨기기
+        document.querySelectorAll('.dog-detail').forEach(el => {
+            el.classList.remove('active');
+        });
+
+        // 선택한 썸네일 강조
+        const selectedThumb = document.querySelector(`[data-dog-id="${dogId}"]`);
+        if (selectedThumb) {
+            selectedThumb.classList.add('selected');
+        }
+
+        // 선택한 강아지 상세 페이지 보이기
+        const detailEl = document.getElementById(`dog-detail-${dogId}`);
+        if (detailEl) {
+            detailEl.classList.add('active');
+        }
+
+        // 선택한 강아지의 산책 상태 업데이트
+        const dogs = await (await fetch(`/cage/${cageId}/dogs`)).json();
+        const selectedDog = dogs.find(d => d.id === dogId);
+        if (selectedDog) {
+            await loadDogWalks(dogId, selectedDog.name);
+        }
+    }
+
+    // 히스토리 백 방지를 위한 헬퍼 함수
+    const showSwalWithHistoryFix = async (options) => {
+        const currentUrl = window.location.href;
+        let modalClosed = false;
+
+        const popstateHandler = (e) => {
+            if (!modalClosed) {
+                e.preventDefault();
+                e.stopPropagation();
+                Swal.close();
+                modalClosed = true;
+                history.pushState(null, '', currentUrl);
+                window.removeEventListener('popstate', popstateHandler);
+            }
+        };
+
+        window.addEventListener('popstate', popstateHandler);
+
+        const result = await Swal.fire({
+            ...options,
+            didOpen: () => {
+                history.pushState(null, '', currentUrl);
+                if (options.didOpen) options.didOpen();
+            },
+            didClose: () => {
+                modalClosed = true;
+                window.removeEventListener('popstate', popstateHandler);
+                if (options.didClose) options.didClose();
+            }
+        });
+
+        return result;
+    };
+
+    function formatTime(str) {
+        const d = new Date(str.replace(' ', 'T'));
+        if (isNaN(d)) return str;
+        const y = d.getFullYear();
+        const m = (d.getMonth()+1).toString().padStart(2,'0');
+        const day = d.getDate().toString().padStart(2,'0');
+        const h = d.getHours().toString().padStart(2,'0');
+        const min = d.getMinutes().toString().padStart(2,'0');
+        return `${y}년 ${m}월 ${day}일 ${h}:${min}`;
+    }
+
+    async function loadDogWalks(dogId, dogName) {
+        try {
+            const res = await fetch(`/cage/${cageId}/dogs/${dogId}/walks`);
+            const records = await res.json();
+
+            const now = new Date();
+            const todayRecords = records.filter(r => {
+                const d = new Date(r.time.replace(' ', 'T'));
+                return d.getFullYear() === now.getFullYear() &&
+                    d.getMonth() === now.getMonth() &&
+                    d.getDate() === now.getDate();
+            });
+
+            const pastRecords = records
+                .map(r => new Date(r.time.replace(' ', 'T')))
+                .filter(d => d < new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+                .sort((a, b) => b - a);
+
+            const walkBtn = document.getElementById(`walk-btn-${dogId}`);
+            const walkStatusMessage = document.getElementById('walk-status-message');
+            const walkRecords = document.getElementById(`walk-records-${dogId}`);
+
+            if (todayRecords.length > 0) {
+                walkBtn.style.background = '#1976d2';
+                walkStatusMessage.innerHTML = `<span style="color: #1976d2;">오늘 산책을 ${todayRecords.length}번 했어요!</span>`;
+            } else if (pastRecords.length > 0) {
+                const lastWalk = pastRecords[0];
+                const lastWalkDate = new Date(lastWalk.getFullYear(), lastWalk.getMonth(), lastWalk.getDate());
+                const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const diffDays = Math.floor((todayDate - lastWalkDate) / (1000*60*60*24));
+                walkBtn.style.background = '#e53935';
+                walkStatusMessage.innerHTML = `산책한지 <span style="color: #e53935; font-weight: bold;">${diffDays}일</span> 됐어요`;
+            } else {
+                walkBtn.style.background = '#e53935';
+                walkStatusMessage.innerHTML = '<span style="color: #e53935;">산책 기록이 없어요!</span>';
+            }
+
+            walkBtn.classList.add('loaded');
+
+            walkRecords.innerHTML = records.length
+                ? records.reverse().map(r => `
+                    <li class="record-item" data-id="${r.id}" data-dog-id="${dogId}">
+                        <span>${formatTime(r.time)}</span>
+                    </li>`).join('')
+                : '<li>기록이 없습니다.</li>';
+
+            // 롱 프레스 삭제 기능
+            document.querySelectorAll(`#walk-records-${dogId} .record-item`).forEach(item => {
+                let pressTimer;
+
+                const startPress = () => {
+                    pressTimer = setTimeout(async () => {
+                        const walkId = item.dataset.id;
+                        const dogIdForDelete = item.dataset.dogId;
+
+                        const result = await showSwalWithHistoryFix({
+                            title: '산책 기록을 지울까요?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '네, 지울게요',
+                            cancelButtonText: '아니요'
+                        });
+                        if (!result.isConfirmed) return;
+
+                        try {
+                            const res = await fetch(`/cage/${cageId}/dogs/${dogIdForDelete}/walk/${walkId}`, { method: 'DELETE' });
+                            if (!res.ok) throw new Error('삭제 실패');
+                            await showSwalWithHistoryFix({
+                                title: '삭제 완료!',
+                                text: '산책 기록이 삭제되었습니다.',
+                                icon: 'success'
+                            });
+                            await loadDogWalks(dogIdForDelete, dogName);
+                        } catch {
+                            await showSwalWithHistoryFix({
+                                title: '에러',
+                                text: '산책 기록 삭제에 실패했습니다.',
+                                icon: 'error'
+                            });
+                        }
+                    }, 2000);
+                };
+
+                const cancelPress = () => {
+                    clearTimeout(pressTimer);
+                };
+
+                item.addEventListener('mousedown', startPress);
+                item.addEventListener('mouseup', cancelPress);
+                item.addEventListener('mouseleave', cancelPress);
+                item.addEventListener('touchstart', startPress);
+                item.addEventListener('touchend', cancelPress);
+            });
+
+        } catch (error) {
+            console.error(`강아지 ${dogId} 산책 기록 로드 실패:`, error);
+        }
+    }
+
+    async function walkDog(dogId, dogName) {
+        // 먼저 오늘 기록 다시 로드해서 개수 확인
+        const res = await fetch(`/cage/${cageId}/dogs/${dogId}/walks`);
+        const records = await res.json();
+        const now = new Date();
+        const todayRecords = records.filter(r => {
+            const d = new Date(r.time.replace(' ', 'T'));
+            return d.getFullYear() === now.getFullYear() &&
+                d.getMonth() === now.getMonth() &&
+                d.getDate() === now.getDate();
+        });
+
+        if (todayRecords.length >= 2) {
+            await showSwalWithHistoryFix({
+                title: '안돼요!',
+                text: '하루에 두 번까지만 산책할 수 있어요.',
+                icon: 'warning'
+            });
+            return;
+        }
+
+        const result = await showSwalWithHistoryFix({
+            title: `${dogName}를 산책할까요?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '네, 산책할게요!',
+            cancelButtonText: '아니요'
+        });
+
+        if (!result.isConfirmed) return;
+
+        const time = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+        try {
+            const res2 = await fetch(`/cage/${cageId}/dogs/${dogId}/walk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ time })
+            });
+            if (!res2.ok) throw new Error('저장 실패');
+            await showSwalWithHistoryFix({
+                title: '저장 완료!',
+                text: '산책 기록이 저장되었습니다.',
+                icon: 'success'
+            });
+            await loadDogWalks(dogId, dogName);
+        } catch {
+            await showSwalWithHistoryFix({
+                title: '에러',
+                text: '산책 기록 저장에 실패했습니다.',
+                icon: 'error'
+            });
+        }
+    }
+
+    async function loadDogs() {
+        try {
+            const res = await fetch(`/cage/${cageId}/dogs`);
+            const dogs = await res.json();
+
+            if (dogs.length === 0) {
+                dogsGallery.innerHTML = `
+                    <div class="no-dogs">
+                        <p>강아지가 없습니다</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 갤러리 썸네일 생성
+            dogsGallery.innerHTML = dogs.map(dog => `
+                <div class="dog-thumbnail" data-dog-id="${dog.id}" onclick="showDogDetail('${dog.id}')">
+                    <img
+                        class="dog-photo"
+                        src="https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${cageId}_dog_${dog.id}_thumb.jpeg?t=${Date.now()}"
+                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22 text-anchor=%22middle%22 dy=%22.3em%22%3E사진없음%3C/text%3E%3C/svg%3E'"
+                        alt="${dog.name}"
+                    >
+                    <div class="dog-name">${dog.name}</div>
+                </div>
+            `).join('');
+
+            // 강아지가 한 마리면 가운데 정렬
+            if (dogs.length === 1) {
+                dogsGallery.classList.add('single-dog');
+            } else {
+                dogsGallery.classList.remove('single-dog');
+            }
+
+            // 각 강아지의 상세 페이지 생성
+            dogDetailContainer.innerHTML = dogs.map(dog => `
+                <div class="dog-detail" id="dog-detail-${dog.id}">
+                    <div class="dog-detail-header">
+                        <img
+                            class="dog-detail-photo"
+                            src="https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${cageId}_dog_${dog.id}_thumb.jpeg?t=${Date.now()}"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22 text-anchor=%22middle%22 dy=%22.3em%22%3E사진없음%3C/text%3E%3C/svg%3E'"
+                            alt="${dog.name}"
+                        >
+                        <div class="dog-info">
+                            <div class="dog-detail-name">${dog.name}</div>
+                        </div>
+                    </div>
+                    <button class="walk-btn" id="walk-btn-${dog.id}" onclick="walkDog('${dog.id}', '${dog.name}')">산책하기</button>
+                    <div class="walk-records-title">산책기록</div>
+                    <ul class="walk-records" id="walk-records-${dog.id}">
+                        <li>로딩 중...</li>
+                    </ul>
+                </div>
+            `).join('');
+
+            // 각 강아지의 산책 기록 로드
+            for (const dog of dogs) {
+                await loadDogWalks(dog.id, dog.name);
+            }
+
+            // walkDog, showDogDetail 함수를 전역으로 노출
+            window.walkDog = walkDog;
+            window.showDogDetail = showDogDetail;
+
+            // 첫 번째 강아지 자동 선택
+            if (dogs.length > 0) {
+                showDogDetail(dogs[0].id);
+            }
+
+            // 스크롤 인디케이터 버튼 처리
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            const gallery = dogsGallery;
+
+            function updateScrollIndicator() {
+                const isScrollable = gallery.scrollWidth > gallery.clientWidth;
+                const isScrolledToEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 5;
+
+                if (!isScrollable || isScrolledToEnd) {
+                    scrollIndicator.classList.add('hidden');
+                } else {
+                    scrollIndicator.classList.remove('hidden');
+                }
+            }
+
+            // 버튼 클릭 시 스크롤
+            scrollIndicator.addEventListener('click', () => {
+                gallery.scrollBy({ left: 200, behavior: 'smooth' });
+            });
+
+            // 스크롤 이벤트 리스너
+            gallery.addEventListener('scroll', updateScrollIndicator);
+
+            // 초기 상태 체크
+            updateScrollIndicator();
+
+        } catch (error) {
+            console.error('강아지 목록 로드 실패:', error);
+            dogsGallery.innerHTML = `
+                <div class="no-dogs">
+                    <p>강아지 목록을 불러올 수 없습니다</p>
+                </div>
+            `;
+        }
+    }
+
+    // 페이지 로드 시 강아지 목록 불러오기
+    loadDogs();
+</script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title><%= cageId %>번 견사 관리</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f6f8fa;
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .header {
+            background: #f6f8fa;
+            padding: 16px 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .edit-cage-name-btn {
+            background: #667eea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .edit-cage-name-btn:hover {
+            background: #5568d3;
+        }
+        .edit-cage-name-btn:active {
+            transform: scale(0.95);
+        }
+        .section {
+            margin-top: 24px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3a3a3a;
+            margin-bottom: 12px;
+        }
+        .add-dog-form {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #3a3a3a;
+            margin-bottom: 6px;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1.5px solid #e3e7ee;
+            border-radius: 8px;
+            outline: none;
+        }
+        .form-group input[type="text"]:focus {
+            border-color: #667eea;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .dog-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dog-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dog-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+        .dog-info {
+            flex: 1;
+        }
+        .dog-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3a3a3a;
+            margin-bottom: 4px;
+        }
+        .dog-id {
+            font-size: 12px;
+            color: #999;
+        }
+        .dog-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-upload {
+            background: #1976d2;
+            color: #fff;
+        }
+        .btn-edit {
+            background: #ff9800;
+            color: #fff;
+        }
+        .btn-delete {
+            background: #e53935;
+            color: #fff;
+        }
+        .btn-upload:active, .btn-edit:active, .btn-delete:active {
+            transform: scale(0.95);
+        }
+        .no-dogs {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        .file-input {
+            display: none;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 12px 24px;
+            background: #fff;
+            color: #3a3a3a;
+            border: 1.5px solid #e3e7ee;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span id="cage-name-display"><%= cageId %>번 견사 관리</span>
+                <button class="edit-cage-name-btn" onclick="editCageName()">이름 변경</button>
+            </h1>
+        </div>
+
+        <div class="section">
+            <div class="section-title">강아지 추가</div>
+            <div class="add-dog-form">
+                <div class="form-group">
+                    <label for="dog-name">강아지 이름</label>
+                    <input type="text" id="dog-name" placeholder="이름을 입력하세요">
+                </div>
+                <button class="btn btn-primary" onclick="addDog()">추가하기</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">강아지 목록</div>
+            <ul class="dog-list" id="dog-list">
+                <li class="no-dogs">강아지가 없습니다</li>
+            </ul>
+        </div>
+
+        <a href="/adminjigdda" class="back-btn">관리자 목록으로 돌아가기</a>
+    </div>
+
+    <script>
+        const cageId = <%= cageId %>;
+
+        async function loadDogs() {
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs`);
+                const dogs = await res.json();
+
+                const dogList = document.getElementById('dog-list');
+
+                if (dogs.length === 0) {
+                    dogList.innerHTML = '<li class="no-dogs">강아지가 없습니다</li>';
+                    return;
+                }
+
+                dogList.innerHTML = dogs.map(dog => `
+                    <li class="dog-item">
+                        <img
+                            class="dog-photo"
+                            src="https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${cageId}_dog_${dog.id}_thumb.jpeg?t=${Date.now()}"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22 text-anchor=%22middle%22 dy=%22.3em%22%3E사진없음%3C/text%3E%3C/svg%3E'"
+                            alt="${dog.name}"
+                        >
+                        <div class="dog-info">
+                            <div class="dog-name">${dog.name}</div>
+                            <div class="dog-id">ID: ${dog.id.substring(0, 8)}...</div>
+                        </div>
+                        <div class="dog-actions">
+                            <button class="btn-small btn-upload" onclick="uploadPhoto('${dog.id}')">사진 업로드</button>
+                            <button class="btn-small btn-edit" onclick="editDogName('${dog.id}', '${dog.name}')">이름 수정</button>
+                            <button class="btn-small btn-delete" onclick="deleteDog('${dog.id}', '${dog.name}')">삭제</button>
+                        </div>
+                    </li>
+                `).join('');
+            } catch (error) {
+                console.error('강아지 목록 로드 실패:', error);
+                await Swal.fire('에러', '강아지 목록을 불러올 수 없습니다.', 'error');
+            }
+        }
+
+        async function addDog() {
+            const nameInput = document.getElementById('dog-name');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                await Swal.fire('입력 오류', '강아지 이름을 입력해주세요.', 'warning');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+
+                if (!res.ok) throw new Error('추가 실패');
+
+                await Swal.fire('성공', `${name}이(가) 추가되었습니다!`, 'success');
+                nameInput.value = '';
+                await loadDogs();
+            } catch (error) {
+                console.error('강아지 추가 실패:', error);
+                await Swal.fire('에러', '강아지 추가에 실패했습니다.', 'error');
+            }
+        }
+
+        async function deleteDog(dogId, dogName) {
+            const result = await Swal.fire({
+                title: `${dogName}을(를) 삭제할까요?`,
+                text: '이 작업은 되돌릴 수 없습니다.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '삭제',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#e53935'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs/${dogId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!res.ok) throw new Error('삭제 실패');
+
+                await Swal.fire('삭제 완료', `${dogName}이(가) 삭제되었습니다.`, 'success');
+                await loadDogs();
+            } catch (error) {
+                console.error('강아지 삭제 실패:', error);
+                await Swal.fire('에러', '강아지 삭제에 실패했습니다.', 'error');
+            }
+        }
+
+        async function uploadPhoto(dogId) {
+            // 파일 선택 input 생성
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.className = 'file-input';
+
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // 로딩 표시
+                Swal.fire({
+                    title: '업로드 중...',
+                    text: '사진을 업로드하고 있습니다.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                try {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const res = await fetch(`/cage/${cageId}/dogs/${dogId}/photo`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!res.ok) throw new Error('업로드 실패');
+
+                    await Swal.fire('성공', '사진이 업로드되었습니다!', 'success');
+                    await loadDogs();
+                } catch (error) {
+                    console.error('사진 업로드 실패:', error);
+                    await Swal.fire('에러', '사진 업로드에 실패했습니다.', 'error');
+                }
+            };
+
+            input.click();
+        }
+
+        async function editDogName(dogId, currentName) {
+            const result = await Swal.fire({
+                title: '이름 수정',
+                input: 'text',
+                inputLabel: '새로운 이름을 입력하세요',
+                inputValue: currentName,
+                showCancelButton: true,
+                confirmButtonText: '수정',
+                cancelButtonText: '취소',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return '이름을 입력해주세요!';
+                    }
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            const newName = result.value.trim();
+
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs/${dogId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                });
+
+                if (!res.ok) throw new Error('수정 실패');
+
+                await Swal.fire('수정 완료', `이름이 "${newName}"(으)로 변경되었습니다.`, 'success');
+                await loadDogs();
+            } catch (error) {
+                console.error('이름 수정 실패:', error);
+                await Swal.fire('에러', '이름 수정에 실패했습니다.', 'error');
+            }
+        }
+
+        async function loadCageName() {
+            try {
+                const res = await fetch(`/cage/${cageId}/name`);
+                const data = await res.json();
+                document.getElementById('cage-name-display').textContent = `${data.name} 관리`;
+            } catch (error) {
+                console.error('견사 이름 로드 실패:', error);
+            }
+        }
+
+        async function editCageName() {
+            const currentDisplay = document.getElementById('cage-name-display').textContent;
+            const currentName = currentDisplay.replace(' 관리', '');
+
+            const result = await Swal.fire({
+                title: '견사 이름 변경',
+                input: 'text',
+                inputLabel: '새로운 견사 이름을 입력하세요',
+                inputValue: currentName,
+                showCancelButton: true,
+                confirmButtonText: '변경',
+                cancelButtonText: '취소',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return '이름을 입력해주세요!';
+                    }
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            const newName = result.value.trim();
+
+            try {
+                const res = await fetch(`/cage/${cageId}/name`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                });
+
+                if (!res.ok) throw new Error('변경 실패');
+
+                await Swal.fire('변경 완료', `견사 이름이 "${newName}"(으)로 변경되었습니다.`, 'success');
+                document.getElementById('cage-name-display').textContent = `${newName} 관리`;
+            } catch (error) {
+                console.error('견사 이름 변경 실패:', error);
+                await Swal.fire('에러', '견사 이름 변경에 실패했습니다.', 'error');
+            }
+        }
+
+        // 페이지 로드 시 견사 이름과 강아지 목록 불러오기
+        loadCageName();
+        loadDogs();
+    </script>
+</body>
+</html>

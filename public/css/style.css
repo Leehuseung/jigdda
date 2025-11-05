@@ -1,0 +1,320 @@
+/* 기본 스타일 */
+body {
+
+}
+
+/*!* 컨테이너 스타일 *!*/
+.container {
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    margin: 0 auto;
+    background: #f6f8fa;
+    min-height: 100vh;
+}
+
+.cage-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #3a3a3a;
+    background: #fff;
+    border-radius: 18px;
+    padding: 18px 0 18px 0;
+    margin: 24px 0 18px 0;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    letter-spacing: 1px;
+}
+
+/* 헤더 스타일 */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding: 10px 0;
+    z-index: 1;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 검색창 wrapper */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* 검색 input 스타일 */
+#search-input {
+    width: 100%;
+    padding: 10px 40px 10px 10px;  /* 오른쪽 여백을 40px로 설정 */
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+/* X 아이콘 스타일 */
+.clear-icon {
+    position: absolute;
+    right: 10px;
+    top: 37%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+    display: none; /* 기본적으로 숨김 */
+}
+
+/* 강아지 리스트 */
+#dog-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* 스크롤 허용 */
+}
+
+/* 강아지 아이템 스타일 */
+.dog-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.dog-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* 산책 완료된 강아지 스타일 */
+.dog-item.walked {
+    background-color: #e1f7d5;
+    border-color: #a0e18f;
+}
+
+.dog-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.dog-name {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+    min-width: 60px;
+}
+
+.walk-time {
+    font-size: 14px;
+    color: #777;
+    margin-left: auto;
+    min-width: 48px;
+    text-align: right;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 20px;
+    }
+}
+
+.dog-photo {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 12px;
+    border: 2px solid #eee;
+    background: #fff;
+    cursor: pointer;
+}
+
+.photo-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.photo-modal img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.3);
+    background: #fff;
+    padding: 8px;
+}
+
+.cage-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 24px;
+}
+.cage-actions button {
+    width: 80vw;
+    max-width: 320px;
+    padding: 18px 0;
+    margin-bottom: 18px;
+    font-size: 20px;
+    border: none;
+    border-radius: 16px;
+    /*background: linear-gradient(90deg, #4caf50 0%, #2196f3 100%);*/
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 4px 16px rgba(33,150,243,0.10);
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 1px;
+}
+.cage-actions button:last-child {
+    background: #2196f3;
+}
+.cage-actions button:active {
+    /*background: linear-gradient(90deg, #388e3c 0%, #1976d2 100%);*/
+    transform: scale(0.98);
+}
+#walk-records {
+    margin: 0 auto;
+    margin-top: 18px;
+    padding: 0;
+    max-width: 360px;
+    list-style: none;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+    overflow: hidden;
+    border: 1.5px solid #e3e7ee;
+}
+#walk-records li {
+    padding: 16px 0;
+    border-bottom: 1.5px solid #e3e7ee;
+    text-align: center;
+    font-size: 17px;
+    color: #2d2d2d;
+    background: #fafdff;
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+}
+#walk-records li:last-child {
+    border-bottom: none;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 0 4vw;
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    .cage-title {
+        font-size: 1.3rem;
+        padding: 12px 0;
+        margin: 16px 0 12px 0;
+        background: #fff;
+    }
+    .cage-actions button {
+        width: 92vw;
+        max-width: 92vw;
+        font-size: 18px;
+        padding: 14px 0;
+    }
+    #walk-records {
+        max-width: 92vw;
+    }
+}
+.delete-btn {
+    margin-left: 10px;
+    padding: 2px 6px;
+    font-size: 12px;
+    border: none;
+    border-radius: 6px;
+    background: #e53935;
+    color: #fff;
+    cursor: pointer;
+    vertical-align: middle; /* 🔥 텍스트랑 수직 정렬 */
+}
+
+.delete-btn:hover {
+    background: #c62828;
+}
+
+
+.cage-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0;
+    gap: 16px;
+}
+
+.cage-header .cage-title {
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.nav-btn {
+    background: #ffffff;
+    color: #3a3a3a;
+    border: none;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.nav-btn:disabled {
+    background: #e0e0e0;
+    color: #9e9e9e;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/*.slide-out-left {*/
+/*    animation: slideOutLeft 0.4s forwards;*/
+/*}*/
+/*.slide-out-right {*/
+/*    animation: slideOutRight 0.4s forwards;*/
+/*}*/
+
+/*@keyframes slideOutLeft {*/
+/*    from { transform: translateX(0); opacity: 1; }*/
+/*    to   { transform: translateX(-100%); opacity: 0; }*/
+/*}*/
+/*@keyframes slideOutRight {*/
+/*    from { transform: translateX(0); opacity: 1; }*/
+/*    to   { transform: translateX(100%); opacity: 0; }*/
+/*}*/

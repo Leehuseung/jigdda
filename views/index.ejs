@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내사랑 바둑이</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<div class="container">
+    <h1>내사랑 바둑이</h1>
+
+    <!-- ✅ 검색창 추가 -->
+    <div class="search-wrapper">
+        <input type="text" id="search-input" placeholder="강아지 이름 검색..." />
+        <span id="clear-search" class="clear-icon">&#10005;</span> <!-- X 아이콘 -->
+    </div>
+
+    <ul id="dog-list">
+        <% dogs.forEach((dog, index) => { %>
+            <li class="dog-item" data-index="<%= dog.id %>">
+                <img class="dog-photo" src="https://jikddaz.s3.ap-northeast-2.amazonaws.com/<%= dog.id %>_thumb.jpeg" onerror="this.onerror=null;this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg';" alt="<%= dog.name %>" />
+                <span class="dog-info">
+                    <span class="dog-name"><%= dog.name %></span>
+                    <span class="walk-time"></span>
+                </span>
+            </li>
+        <% }); %>
+    </ul>
+    <!-- 사진 확대 모달 -->
+    <div id="photo-modal" class="photo-modal" style="display:none;">
+        <img id="modal-img" src="" alt="강아지 사진" />
+    </div>
+</div>
+
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
