@@ -333,13 +333,16 @@
     if (cageId <= 1) {
         prevBtn.disabled = true;
     }
+    if (cageId >= 60) {
+        nextBtn.disabled = true;
+    }
 
     prevBtn.addEventListener('click', () => {
         if (cageId > 1) window.location.href = `/cage/${cageId - 1}`;
     });
 
     nextBtn.addEventListener('click', () => {
-        window.location.href = `/cage/${cageId + 1}`;
+        if (cageId < 60) window.location.href = `/cage/${cageId + 1}`;
     });
 
     async function showDogDetail(dogId) {
