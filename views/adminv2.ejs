@@ -15,6 +15,74 @@
             background: #f6f8fa;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
         }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f6f8fa;
+        }
+        .close-btn {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 28px;
+            color: #3a3a3a;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-btn:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+        }
+        .close-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-btn {
+            background: #ffffff;
+            color: #3a3a3a;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover {
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+        }
+        .nav-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .nav-btn:disabled {
+            background: #e0e0e0;
+            color: #9e9e9e;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -203,6 +271,13 @@
     </style>
 </head>
 <body>
+    <div class="top-nav">
+        <button id="close-btn" class="close-btn" aria-label="닫기">&times;</button>
+        <div class="nav-buttons">
+            <button id="prev-cage" class="nav-btn" aria-label="이전 견사">&lt;</button>
+            <button id="next-cage" class="nav-btn" aria-label="다음 견사">&gt;</button>
+        </div>
+    </div>
     <div class="container">
         <div class="header">
             <h1>
@@ -234,6 +309,32 @@
 
     <script>
         const cageId = <%= cageId %>;
+        const closeBtn = document.getElementById('close-btn');
+        const prevBtn = document.getElementById('prev-cage');
+        const nextBtn = document.getElementById('next-cage');
+
+        // 닫기 버튼 - 관리자 목록으로 이동
+        closeBtn.addEventListener('click', () => {
+            window.location.href = '/adminjigdda';
+        });
+
+        // 버튼 상태 업데이트
+        if (cageId <= 1) {
+            prevBtn.disabled = true;
+        }
+        if (cageId >= 60) {
+            nextBtn.disabled = true;
+        }
+
+        // 이전 견사 버튼
+        prevBtn.addEventListener('click', () => {
+            if (cageId > 1) window.location.href = `/cage/${cageId - 1}/adminv2`;
+        });
+
+        // 다음 견사 버튼
+        nextBtn.addEventListener('click', () => {
+            if (cageId < 60) window.location.href = `/cage/${cageId + 1}/adminv2`;
+        });
 
         async function loadDogs() {
             try {
