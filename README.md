@@ -8,6 +8,7 @@ Express 기반으로 구성되었으며, AWS EC2, S3, PM2 등을 활용하여 �
 ## 🚀 Tech Stack
 
 - **Backend**: Node.js (Express)
+- **Template Engine**: EJS
 - **Infra**: AWS EC2
 - **Storage**: AWS S3
 - **Process Manager**: PM2
