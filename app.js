@@ -418,8 +418,8 @@ app.post('/cage/:id/walk', (req, res) => {
     const walkId = uuidv4();
     walks.push({ id: walkId, time, cageId });
 
-    if (walks.length > 20) {
-        walks = walks.slice(-20); // 최근 20개만 남김
+    if (walks.length > 10) {
+        walks = walks.slice(-10); // 최근 10개만 남김
     }
 
     fs.writeFileSync(filePath, JSON.stringify(walks, null, 2));
@@ -653,8 +653,8 @@ app.post('/cage/:id/dogs/:dogId/walk', (req, res) => {
     const walkId = uuidv4();
     walks.push({ id: walkId, time, cageId, dogId });
 
-    if (walks.length > 20) {
-        walks = walks.slice(-20); // 최근 20개만 남김
+    if (walks.length > 10) {
+        walks = walks.slice(-10); // 최근 10개만 남김
     }
 
     fs.writeFileSync(filePath, JSON.stringify(walks, null, 2));
