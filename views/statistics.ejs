@@ -453,7 +453,7 @@
 
         data.forEach((item, index) => {
             const row = document.createElement('tr');
-            const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/${item.dogId}_thumb.jpeg`;
+            const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${item.cageId}_dog_${item.dogId}_thumb.jpeg`;
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
                 <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'"></td>
