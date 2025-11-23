@@ -727,9 +727,9 @@ app.get('/api/statistics', (req, res) => {
     const end = new Date(endDate);
     end.setHours(23, 59, 59, 999); // 종료일 끝까지 포함
 
-    const statisticsMap = new Map(); // cageId를 키로 하는 맵
+    const statisticsMap = new Map(); // dogId를 키로 하는 맵
 
-    // 먼저 모든 견사를 0으로 초기화
+    // 먼저 모든 강아지를 0으로 초기화
     const cageDogFiles = fs.readdirSync(dogsDir).filter(f => f.startsWith('cage_') && f.endsWith('_dogs.json'));
     cageDogFiles.forEach(file => {
         const match = file.match(/cage_(\d+)_dogs\.json/);
@@ -751,22 +751,22 @@ app.get('/api/statistics', (req, res) => {
             }
         }
 
-        // 강아지 이름들 가져오기
+        // 강아지들 가져오기
         const dogsFilePath = path.join(dogsDir, file);
-        let dogNames = [];
         try {
             const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
-            dogNames = dogs.map(d => d.name);
+            dogs.forEach(dog => {
+                statisticsMap.set(dog.id, {
+                    dogId: dog.id,
+                    dogName: dog.name || '이름 없음',
+                    cageId: parseInt(cageId),
+                    cageName,
+                    walkCount: 0
+                });
+            });
         } catch (err) {
             console.error(`Error reading dogs for cage ${cageId}:`, err);
         }
-
-        statisticsMap.set(cageId, {
-            cageId: parseInt(cageId),
-            cageName,
-            dogNames: dogNames.length > 0 ? dogNames : ['이름 없음'],
-            walkCount: 0
-        });
     });
 
     // 모든 cage_dog_walks 파일 읽기
@@ -777,7 +777,7 @@ app.get('/api/statistics', (req, res) => {
         const match = file.match(/cage_(\d+)_dog_(.+)_walks\.json/);
         if (!match) return;
 
-        const cageId = match[1];
+        const dogId = match[2];
         const walksPath = path.join(dogWalksDir, file);
 
         try {
@@ -789,9 +789,9 @@ app.get('/api/statistics', (req, res) => {
                 return walkDate >= start && walkDate <= end;
             });
 
-            // 산책 카운트 증가 (견사가 이미 Map에 있을 경우)
-            if (statisticsMap.has(cageId)) {
-                statisticsMap.get(cageId).walkCount += filteredWalks.length;
+            // 산책 카운트 증가 (강아지가 이미 Map에 있을 경우)
+            if (statisticsMap.has(dogId)) {
+                statisticsMap.get(dogId).walkCount += filteredWalks.length;
             }
         } catch (err) {
             console.error(`Error processing ${file}:`, err);

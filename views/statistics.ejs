@@ -177,6 +177,14 @@
             color: #667eea;
         }
 
+        .dog-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
         .back-btn {
             margin-top: 20px;
             width: 100%;
@@ -233,8 +241,8 @@
             <div class="value" id="totalWalks">-</div>
         </div>
         <div class="summary-card">
-            <h3>산책한 견사 수</h3>
-            <div class="value" id="totalCages">-</div>
+            <h3>산책한 강아지 수</h3>
+            <div class="value" id="totalDogs">-</div>
         </div>
         <div class="summary-card">
             <h3>평균 산책 횟수</h3>
@@ -251,7 +259,7 @@
             <thead>
             <tr>
                 <th class="rank">순위</th>
-                <th>견사</th>
+                <th>사진</th>
                 <th>강아지</th>
                 <th>산책 횟수</th>
             </tr>
@@ -331,7 +339,7 @@
         if (data.length === 0) {
             document.querySelector('.chart-container').innerHTML = '<div class="no-data">선택한 기간에 산책 기록이 없습니다</div>';
             document.getElementById('totalWalks').textContent = '0';
-            document.getElementById('totalCages').textContent = '0';
+            document.getElementById('totalDogs').textContent = '0';
             document.getElementById('avgWalks').textContent = '0';
             document.getElementById('tableBody').innerHTML = '';
             return;
@@ -339,11 +347,12 @@
 
         // 요약 정보 업데이트
         const totalWalks = data.reduce((sum, item) => sum + item.walkCount, 0);
-        const totalCages = data.length;
-        const avgWalks = (totalWalks / totalCages).toFixed(1);
+        const dogsWithWalks = data.filter(item => item.walkCount > 0).length;
+        const totalDogs = data.length;
+        const avgWalks = totalDogs > 0 ? (totalWalks / totalDogs).toFixed(1) : '0';
 
         document.getElementById('totalWalks').textContent = totalWalks;
-        document.getElementById('totalCages').textContent = totalCages;
+        document.getElementById('totalDogs').textContent = dogsWithWalks;
         document.getElementById('avgWalks').textContent = avgWalks;
 
         // 차트 그리기
@@ -360,8 +369,7 @@
         container.innerHTML = '<canvas id="walkChart"></canvas>';
 
         const labels = data.map(item => {
-            const dogNamesStr = item.dogNames.join(', ');
-            return item.cageName + (dogNamesStr ? ` (${dogNamesStr})` : '');
+            return `${item.dogName} (${item.cageName})`;
         });
         const values = data.map(item => item.walkCount);
 
@@ -397,7 +405,7 @@
                     },
                     title: {
                         display: true,
-                        text: '견사별 산책 횟수',
+                        text: '강아지별 산책 횟수',
                         font: {
                             size: 18,
                             weight: 'bold'
@@ -445,10 +453,11 @@
 
         data.forEach((item, index) => {
             const row = document.createElement('tr');
+            const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/${item.dogId}_thumb.jpeg`;
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
-                <td>${item.cageName}</td>
-                <td>${item.dogNames.join(', ')}</td>
+                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'"></td>
+                <td>${item.dogName}</td>
                 <td><strong>${item.walkCount}회</strong></td>
             `;
             tbody.appendChild(row);
