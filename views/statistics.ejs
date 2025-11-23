@@ -143,6 +143,10 @@
             background: #f8f9fa;
         }
 
+        .clickable-row {
+            cursor: pointer;
+        }
+
         .rank {
             width: 50px;
             text-align: center;
@@ -465,9 +469,12 @@
             const row = document.createElement('tr');
             const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${item.cageId}_dog_${item.dogId}_thumb.jpeg`;
 
+            row.classList.add('clickable-row');
+            row.setAttribute('data-cage-id', item.cageId);
+
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
-                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
+                <td class="photo-cell"><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
                 <td>${item.dogName}</td>
                 <td>${item.cageId}번</td>
                 <td class="walk-count"><strong>${item.walkCount}회</strong></td>
@@ -475,9 +482,19 @@
             tbody.appendChild(row);
         });
 
-        // 이미지 클릭 이벤트 추가
+        // 행 클릭 이벤트 - 견사 페이지로 이동
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', function() {
+                const cageId = this.getAttribute('data-cage-id');
+                window.location.href = `/cage/${cageId}`;
+            });
+        });
+
+        // 이미지 클릭 이벤트 - 모달 열기 (이벤트 전파 막기)
         document.querySelectorAll('.clickable-img').forEach(img => {
-            img.addEventListener('click', function() {
+            img.addEventListener('click', function(e) {
+                e.stopPropagation(); // 행 클릭 이벤트 전파 막기
+
                 const cageId = this.getAttribute('data-cage-id');
                 const dogId = this.getAttribute('data-dog-id');
                 const originalSrc = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${cageId}_dog_${dogId}.jpeg`;
