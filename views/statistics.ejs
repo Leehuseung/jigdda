@@ -278,7 +278,17 @@
 
         // 활성 버튼 표시
         document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+
+        // event가 있을 때만 타겟 버튼 활성화
+        if (typeof event !== 'undefined' && event.target) {
+            event.target.classList.add('active');
+        } else {
+            // 페이지 로드 시 기본으로 30일 버튼 활성화
+            const defaultBtn = document.querySelector('.quick-btn');
+            if (defaultBtn && days === 30) {
+                defaultBtn.classList.add('active');
+            }
+        }
 
         loadStatistics();
     }
