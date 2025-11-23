@@ -727,14 +727,18 @@ app.get('/api/statistics', (req, res) => {
     const end = new Date(endDate);
     end.setHours(23, 59, 59, 999); // 종료일 끝까지 포함
 
-    const statistics = [];
+    const statisticsMap = new Map(); // cageId를 키로 하는 맵
 
-    // 모든 cage_walks 파일 읽기
-    const files = fs.readdirSync(walksDir).filter(f => f.endsWith('_walks.json'));
+    // 모든 cage_dog_walks 파일 읽기
+    const files = fs.readdirSync(dogWalksDir).filter(f => f.endsWith('_walks.json'));
 
     files.forEach(file => {
-        const cageId = file.match(/cage_(\d+)_walks\.json/)[1];
-        const walksPath = path.join(walksDir, file);
+        // 파일명 패턴: cage_{cageId}_dog_{dogId}_walks.json
+        const match = file.match(/cage_(\d+)_dog_(.+)_walks\.json/);
+        if (!match) return;
+
+        const cageId = match[1];
+        const walksPath = path.join(dogWalksDir, file);
 
         try {
             const walks = JSON.parse(fs.readFileSync(walksPath, 'utf-8'));
@@ -746,43 +750,51 @@ app.get('/api/statistics', (req, res) => {
             });
 
             if (filteredWalks.length > 0) {
-                // 견사 이름 가져오기
-                let cageName = `${cageId}번 견사`;
-                const nameFilePath = path.join(cageNamesDir, `cage_${cageId}_name.json`);
-                if (fs.existsSync(nameFilePath)) {
-                    try {
-                        const nameData = JSON.parse(fs.readFileSync(nameFilePath, 'utf-8'));
-                        if (nameData.name) {
-                            cageName = nameData.name;
+                // 이미 해당 견사의 통계가 있으면 카운트만 증가
+                if (statisticsMap.has(cageId)) {
+                    statisticsMap.get(cageId).walkCount += filteredWalks.length;
+                } else {
+                    // 견사 이름 가져오기
+                    let cageName = `${cageId}번 견사`;
+                    const nameFilePath = path.join(cageNamesDir, `cage_${cageId}_name.json`);
+                    if (fs.existsSync(nameFilePath)) {
+                        try {
+                            const nameData = JSON.parse(fs.readFileSync(nameFilePath, 'utf-8'));
+                            if (nameData.name) {
+                                cageName = nameData.name;
+                            }
+                        } catch (err) {
+                            console.error(`Error reading name for cage ${cageId}:`, err);
                         }
-                    } catch (err) {
-                        console.error(`Error reading name for cage ${cageId}:`, err);
                     }
-                }
 
-                // 강아지 이름들 가져오기
-                const dogsFilePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
-                let dogNames = [];
-                if (fs.existsSync(dogsFilePath)) {
-                    try {
-                        const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
-                        dogNames = dogs.map(d => d.name);
-                    } catch (err) {
-                        console.error(`Error reading dogs for cage ${cageId}:`, err);
+                    // 강아지 이름들 가져오기
+                    const dogsFilePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+                    let dogNames = [];
+                    if (fs.existsSync(dogsFilePath)) {
+                        try {
+                            const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
+                            dogNames = dogs.map(d => d.name);
+                        } catch (err) {
+                            console.error(`Error reading dogs for cage ${cageId}:`, err);
+                        }
                     }
-                }
 
-                statistics.push({
-                    cageId: parseInt(cageId),
-                    cageName,
-                    dogNames: dogNames.length > 0 ? dogNames : ['이름 없음'],
-                    walkCount: filteredWalks.length
-                });
+                    statisticsMap.set(cageId, {
+                        cageId: parseInt(cageId),
+                        cageName,
+                        dogNames: dogNames.length > 0 ? dogNames : ['이름 없음'],
+                        walkCount: filteredWalks.length
+                    });
+                }
             }
         } catch (err) {
             console.error(`Error processing ${file}:`, err);
         }
     });
+
+    // 맵을 배열로 변환
+    const statistics = Array.from(statisticsMap.values());
 
     // 산책 횟수 기준 내림차순 정렬
     statistics.sort((a, b) => b.walkCount - a.walkCount);
