@@ -717,9 +717,17 @@
             window.showDogDetail = showDogDetail;
             window.openImageModal = openImageModal;
 
-            // 첫 번째 강아지 자동 선택
+            // URL 파라미터에서 dogId 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedDogId = urlParams.get('dogId');
+
+            // URL에 dogId가 있으면 해당 강아지 선택, 없으면 첫 번째 강아지 선택
             if (dogs.length > 0) {
-                showDogDetail(dogs[0].id);
+                if (selectedDogId && dogs.find(d => d.id === selectedDogId)) {
+                    showDogDetail(selectedDogId);
+                } else {
+                    showDogDetail(dogs[0].id);
+                }
             }
 
             // 스크롤 인디케이터 버튼 처리

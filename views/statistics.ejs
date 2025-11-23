@@ -471,6 +471,7 @@
 
             row.classList.add('clickable-row');
             row.setAttribute('data-cage-id', item.cageId);
+            row.setAttribute('data-dog-id', item.dogId);
 
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
@@ -482,11 +483,12 @@
             tbody.appendChild(row);
         });
 
-        // 행 클릭 이벤트 - 견사 페이지로 이동
+        // 행 클릭 이벤트 - 견사 페이지로 이동 (강아지 ID 포함)
         document.querySelectorAll('.clickable-row').forEach(row => {
             row.addEventListener('click', function() {
                 const cageId = this.getAttribute('data-cage-id');
-                window.location.href = `/cage/${cageId}`;
+                const dogId = this.getAttribute('data-dog-id');
+                window.location.href = `/cage/${cageId}?dogId=${dogId}`;
             });
         });
 
