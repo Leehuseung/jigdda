@@ -710,6 +710,86 @@ app.put('/cage/:id/name', (req, res) => {
     res.json({ success: true });
 });
 
+// 통계 페이지 라우트
+app.get('/statistics', (req, res) => {
+    res.render('statistics');
+});
+
+// 통계 API (날짜 범위별 산책 데이터)
+app.get('/api/statistics', (req, res) => {
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+        return res.status(400).json({ error: 'startDate와 endDate 필요' });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // 종료일 끝까지 포함
+
+    const statistics = [];
+
+    // 모든 cage_walks 파일 읽기
+    const files = fs.readdirSync(walksDir).filter(f => f.endsWith('_walks.json'));
+
+    files.forEach(file => {
+        const cageId = file.match(/cage_(\d+)_walks\.json/)[1];
+        const walksPath = path.join(walksDir, file);
+
+        try {
+            const walks = JSON.parse(fs.readFileSync(walksPath, 'utf-8'));
+
+            // 날짜 범위 내 산책 기록 필터링
+            const filteredWalks = walks.filter(w => {
+                const walkDate = new Date(w.time.replace(' ', 'T'));
+                return walkDate >= start && walkDate <= end;
+            });
+
+            if (filteredWalks.length > 0) {
+                // 견사 이름 가져오기
+                let cageName = `${cageId}번 견사`;
+                const nameFilePath = path.join(cageNamesDir, `cage_${cageId}_name.json`);
+                if (fs.existsSync(nameFilePath)) {
+                    try {
+                        const nameData = JSON.parse(fs.readFileSync(nameFilePath, 'utf-8'));
+                        if (nameData.name) {
+                            cageName = nameData.name;
+                        }
+                    } catch (err) {
+                        console.error(`Error reading name for cage ${cageId}:`, err);
+                    }
+                }
+
+                // 강아지 이름들 가져오기
+                const dogsFilePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+                let dogNames = [];
+                if (fs.existsSync(dogsFilePath)) {
+                    try {
+                        const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
+                        dogNames = dogs.map(d => d.name);
+                    } catch (err) {
+                        console.error(`Error reading dogs for cage ${cageId}:`, err);
+                    }
+                }
+
+                statistics.push({
+                    cageId: parseInt(cageId),
+                    cageName,
+                    dogNames: dogNames.length > 0 ? dogNames : ['이름 없음'],
+                    walkCount: filteredWalks.length
+                });
+            }
+        } catch (err) {
+            console.error(`Error processing ${file}:`, err);
+        }
+    });
+
+    // 산책 횟수 기준 내림차순 정렬
+    statistics.sort((a, b) => b.walkCount - a.walkCount);
+
+    res.json(statistics);
+});
+
 // 서버 시작
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다`);
