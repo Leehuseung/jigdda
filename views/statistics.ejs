@@ -282,7 +282,7 @@
                 <th class="rank">순위</th>
                 <th>사진</th>
                 <th>이름</th>
-                <th>견사</th>
+                <th>산책한지</th>
                 <th class="walk-count">산책 횟수</th>
             </tr>
             </thead>
@@ -477,7 +477,7 @@
                 <td class="rank">${index + 1}</td>
                 <td class="photo-cell"><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
                 <td>${item.dogName}</td>
-                <td>${item.cageId}번</td>
+                <td>${item.daysSinceLastWalk !== null && item.daysSinceLastWalk !== undefined ? item.daysSinceLastWalk + '일' : '정보없음'}</td>
                 <td class="walk-count"><strong>${item.walkCount}회</strong></td>
             `;
             tbody.appendChild(row);
