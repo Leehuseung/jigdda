@@ -465,8 +465,8 @@
                 <td class="rank">${index + 1}</td>
                 <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
                 <td>${item.dogName}</td>
-                <td>${item.cageId}</td>
-                <td><strong>${item.walkCount}</strong></td>
+                <td>${item.cageId}번</td>
+                <td><strong>${item.walkCount}회</strong></td>
             `;
             tbody.appendChild(row);
         });
