@@ -104,33 +104,6 @@
             color: white;
         }
 
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            font-size: 14px;
-            font-weight: 400;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .summary-card .value {
-            font-size: 36px;
-            font-weight: 700;
-        }
-
         .chart-container {
             position: relative;
             height: 500px;
@@ -235,21 +208,6 @@
         <button class="quick-btn" onclick="setDateRange(90, this)">최근 90일</button>
     </div>
 
-    <div class="summary" id="summary">
-        <div class="summary-card">
-            <h3>총 산책 횟수</h3>
-            <div class="value" id="totalWalks">-</div>
-        </div>
-        <div class="summary-card">
-            <h3>산책한 강아지 수</h3>
-            <div class="value" id="totalDogs">-</div>
-        </div>
-        <div class="summary-card">
-            <h3>평균 산책 횟수</h3>
-            <div class="value" id="avgWalks">-</div>
-        </div>
-    </div>
-
     <div class="chart-container">
         <canvas id="walkChart"></canvas>
     </div>
@@ -338,22 +296,9 @@
     function displayStatistics(data) {
         if (data.length === 0) {
             document.querySelector('.chart-container').innerHTML = '<div class="no-data">선택한 기간에 산책 기록이 없습니다</div>';
-            document.getElementById('totalWalks').textContent = '0';
-            document.getElementById('totalDogs').textContent = '0';
-            document.getElementById('avgWalks').textContent = '0';
             document.getElementById('tableBody').innerHTML = '';
             return;
         }
-
-        // 요약 정보 업데이트
-        const totalWalks = data.reduce((sum, item) => sum + item.walkCount, 0);
-        const dogsWithWalks = data.filter(item => item.walkCount > 0).length;
-        const totalDogs = data.length;
-        const avgWalks = totalDogs > 0 ? (totalWalks / totalDogs).toFixed(1) : '0';
-
-        document.getElementById('totalWalks').textContent = totalWalks;
-        document.getElementById('totalDogs').textContent = dogsWithWalks;
-        document.getElementById('avgWalks').textContent = avgWalks;
 
         // 차트 그리기
         drawChart(data);
@@ -456,7 +401,7 @@
             const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${item.cageId}_dog_${item.dogId}_thumb.jpeg`;
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
-                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="if(this.src!=='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'){this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'}else{this.style.display='none'}"></td>
+                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
                 <td>${item.dogName}</td>
                 <td><strong>${item.walkCount}회</strong></td>
             `;

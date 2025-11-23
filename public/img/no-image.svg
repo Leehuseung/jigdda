@@ -1,0 +1,18 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 -->
+  <rect width="200" height="200" fill="#f0f0f0"/>
+
+  <!-- 이미지 아이콘 -->
+  <g transform="translate(50, 50)">
+    <!-- 산 모양 -->
+    <path d="M 0 80 L 40 30 L 70 60 L 100 20 L 100 80 Z" fill="#d0d0d0"/>
+
+    <!-- 태양 -->
+    <circle cx="25" cy="25" r="12" fill="#e0e0e0"/>
+  </g>
+
+  <!-- 텍스트 -->
+  <text x="100" y="140" font-family="Arial, sans-serif" font-size="16" fill="#999" text-anchor="middle">
+    사진 없음
+  </text>
+</svg>
