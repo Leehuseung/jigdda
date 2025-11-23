@@ -789,9 +789,43 @@ app.get('/api/statistics', (req, res) => {
                 return walkDate >= start && walkDate <= end;
             });
 
-            // 산책 카운트 증가 (강아지가 이미 Map에 있을 경우)
+            // 산책 카운트 증가 및 최근 산책일 계산
             if (statisticsMap.has(dogId)) {
                 statisticsMap.get(dogId).walkCount += filteredWalks.length;
+
+                // 모든 산책 기록에서 가장 최근 산책일 찾기
+                if (walks.length > 0) {
+                    const now = new Date();
+                    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                    // 오늘 산책한 기록이 있는지 확인
+                    const todayWalks = walks.filter(w => {
+                        const walkDate = new Date(w.time.replace(' ', 'T'));
+                        return walkDate >= todayStart;
+                    });
+
+                    if (todayWalks.length > 0) {
+                        // 오늘 산책했으면 0일
+                        statisticsMap.get(dogId).daysSinceLastWalk = 0;
+                    } else {
+                        // 과거 산책 기록에서 가장 최근 날짜 찾기
+                        const pastWalks = walks
+                            .map(w => new Date(w.time.replace(' ', 'T')))
+                            .filter(d => d < todayStart)
+                            .sort((a, b) => b - a);
+
+                        if (pastWalks.length > 0) {
+                            const lastWalkDate = pastWalks[0];
+                            const lastWalkDay = new Date(lastWalkDate.getFullYear(), lastWalkDate.getMonth(), lastWalkDate.getDate());
+                            const diffDays = Math.floor((todayStart - lastWalkDay) / (1000 * 60 * 60 * 24));
+                            statisticsMap.get(dogId).daysSinceLastWalk = diffDays;
+                        } else {
+                            statisticsMap.get(dogId).daysSinceLastWalk = null;
+                        }
+                    }
+                } else {
+                    statisticsMap.get(dogId).daysSinceLastWalk = null;
+                }
             }
         } catch (err) {
             console.error(`Error processing ${file}:`, err);
