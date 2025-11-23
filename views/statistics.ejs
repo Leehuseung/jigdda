@@ -250,7 +250,7 @@
             <tr>
                 <th class="rank">순위</th>
                 <th>사진</th>
-                <th>강아지</th>
+                <th>이름</th>
                 <th>견사</th>
                 <th>산책 횟수</th>
             </tr>
@@ -442,8 +442,8 @@
                 <td class="rank">${index + 1}</td>
                 <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
                 <td>${item.dogName}</td>
-                <td>${item.cageName}</td>
-                <td><strong>${item.walkCount}회</strong></td>
+                <td>${item.cageId}</td>
+                <td><strong>${item.walkCount}</strong></td>
             `;
             tbody.appendChild(row);
         });
