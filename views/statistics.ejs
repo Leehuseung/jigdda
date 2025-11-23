@@ -456,7 +456,7 @@
             const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${item.cageId}_dog_${item.dogId}_thumb.jpeg`;
             row.innerHTML = `
                 <td class="rank">${index + 1}</td>
-                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'"></td>
+                <td><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb" onerror="if(this.src!=='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'){this.src='https://jikddaz.s3.ap-northeast-2.amazonaws.com/0_thumb.jpeg'}else{this.style.display='none'}"></td>
                 <td>${item.dogName}</td>
                 <td><strong>${item.walkCount}회</strong></td>
             `;
