@@ -242,7 +242,11 @@
             background: #e53935;
             color: #fff;
         }
-        .btn-upload:active, .btn-edit:active, .btn-delete:active {
+        .btn-move {
+            background: #4caf50;
+            color: #fff;
+        }
+        .btn-upload:active, .btn-edit:active, .btn-delete:active, .btn-move:active {
             transform: scale(0.95);
         }
         .no-dogs {
@@ -363,6 +367,7 @@
                         <div class="dog-actions">
                             <button class="btn-small btn-upload" onclick="uploadPhoto('${dog.id}')">사진 업로드</button>
                             <button class="btn-small btn-edit" onclick="editDogName('${dog.id}', '${dog.name}')">이름 수정</button>
+                            <button class="btn-small btn-move" onclick="moveDog('${dog.id}', '${dog.name}')">견사 이동</button>
                             <button class="btn-small btn-delete" onclick="deleteDog('${dog.id}', '${dog.name}')">삭제</button>
                         </div>
                     </li>
@@ -555,6 +560,63 @@
             } catch (error) {
                 console.error('견사 이름 변경 실패:', error);
                 await Swal.fire('에러', '견사 이름 변경에 실패했습니다.', 'error');
+            }
+        }
+
+        async function moveDog(dogId, dogName) {
+            const result = await Swal.fire({
+                title: `${dogName}을(를) 이동할 견사`,
+                input: 'number',
+                inputLabel: '이동할 견사 번호를 입력하세요 (1~60)',
+                inputPlaceholder: '예: 5',
+                showCancelButton: true,
+                confirmButtonText: '이동',
+                cancelButtonText: '취소',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return '견사 번호를 입력해주세요!';
+                    }
+                    const num = parseInt(value);
+                    if (num < 1 || num > 60) {
+                        return '1~60 사이의 번호를 입력해주세요!';
+                    }
+                    if (num === cageId) {
+                        return '같은 견사로는 이동할 수 없습니다!';
+                    }
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            const toCageId = parseInt(result.value);
+
+            // 로딩 표시
+            Swal.fire({
+                title: '이동 중...',
+                text: `${dogName}을(를) ${toCageId}번 견사로 이동하고 있습니다.`,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs/${dogId}/move`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ toCageId })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || '이동 실패');
+                }
+
+                await Swal.fire('이동 완료', `${dogName}이(가) ${toCageId}번 견사로 이동되었습니다.`, 'success');
+                await loadDogs();
+            } catch (error) {
+                console.error('견사 이동 실패:', error);
+                await Swal.fire('에러', error.message || '견사 이동에 실패했습니다.', 'error');
             }
         }
 

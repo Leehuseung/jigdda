@@ -625,6 +625,76 @@ app.post('/cage/:id/dogs/:dogId/photo', upload.single('image'), async (req, res)
     }
 });
 
+// 강아지 견사 이동 (POST)
+app.post('/cage/:id/dogs/:dogId/move', (req, res) => {
+    const fromCageId = req.params.id;
+    const dogId = req.params.dogId;
+    const { toCageId } = req.body;
+
+    if (!toCageId) {
+        return res.status(400).json({ error: 'toCageId 필요' });
+    }
+
+    if (fromCageId === toCageId) {
+        return res.status(400).json({ error: '같은 견사로는 이동할 수 없습니다' });
+    }
+
+    try {
+        // 원래 견사에서 강아지 정보 가져오기
+        const fromFilePath = path.join(cageDogsDir, `cage_${fromCageId}_dogs.json`);
+        if (!fs.existsSync(fromFilePath)) {
+            return res.status(404).json({ error: '원래 견사를 찾을 수 없습니다' });
+        }
+
+        let fromDogs = JSON.parse(fs.readFileSync(fromFilePath, 'utf-8'));
+        const dogIndex = fromDogs.findIndex(d => d.id === dogId);
+
+        if (dogIndex === -1) {
+            return res.status(404).json({ error: '강아지를 찾을 수 없습니다' });
+        }
+
+        const dog = fromDogs[dogIndex];
+
+        // 목적지 견사 파일 읽기 또는 생성
+        const toFilePath = path.join(cageDogsDir, `cage_${toCageId}_dogs.json`);
+        let toDogs = [];
+        if (fs.existsSync(toFilePath)) {
+            toDogs = JSON.parse(fs.readFileSync(toFilePath, 'utf-8'));
+        }
+
+        // 원래 견사에서 강아지 제거
+        fromDogs.splice(dogIndex, 1);
+        fs.writeFileSync(fromFilePath, JSON.stringify(fromDogs, null, 2));
+
+        // 목적지 견사에 강아지 추가
+        toDogs.push(dog);
+        fs.writeFileSync(toFilePath, JSON.stringify(toDogs, null, 2));
+
+        // 산책 기록 파일 이름 변경
+        const oldWalkFile = path.join(dogWalksDir, `cage_${fromCageId}_dog_${dogId}_walks.json`);
+        const newWalkFile = path.join(dogWalksDir, `cage_${toCageId}_dog_${dogId}_walks.json`);
+
+        if (fs.existsSync(oldWalkFile)) {
+            // 산책 기록 읽기
+            let walks = JSON.parse(fs.readFileSync(oldWalkFile, 'utf-8'));
+            // cageId 업데이트
+            walks = walks.map(walk => ({
+                ...walk,
+                cageId: toCageId.toString()
+            }));
+            // 새 파일로 저장
+            fs.writeFileSync(newWalkFile, JSON.stringify(walks, null, 2));
+            // 기존 파일 삭제
+            fs.unlinkSync(oldWalkFile);
+        }
+
+        res.json({ success: true, message: '견사 이동이 완료되었습니다' });
+    } catch (error) {
+        console.error('견사 이동 에러:', error);
+        res.status(500).json({ error: '견사 이동 실패', details: error.message });
+    }
+});
+
 // 강아지별 산책 기록 조회 (GET)
 app.get('/cage/:id/dogs/:dogId/walks', (req, res) => {
     const cageId = req.params.id;
