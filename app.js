@@ -4,7 +4,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid'); // npm install uuid 필요
 const multer = require('multer');
 const sharp = require('sharp');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, CopyObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 require('dotenv').config();
 
 const app = express();
@@ -626,7 +626,7 @@ app.post('/cage/:id/dogs/:dogId/photo', upload.single('image'), async (req, res)
 });
 
 // 강아지 견사 이동 (POST)
-app.post('/cage/:id/dogs/:dogId/move', (req, res) => {
+app.post('/cage/:id/dogs/:dogId/move', async (req, res) => {
     const fromCageId = req.params.id;
     const dogId = req.params.dogId;
     const { toCageId } = req.body;
@@ -708,6 +708,55 @@ app.post('/cage/:id/dogs/:dogId/move', (req, res) => {
             console.log('산책 기록 파일 이동 완료');
         } else {
             console.log('산책 기록 파일 없음');
+        }
+
+        // S3 이미지 파일 복사
+        const oldImageKey = `cage_${fromCageId}_dog_${dogId}.jpeg`;
+        const oldThumbKey = `cage_${fromCageId}_dog_${dogId}_thumb.jpeg`;
+        const newImageKey = `cage_${toCageId}_dog_${dogId}.jpeg`;
+        const newThumbKey = `cage_${toCageId}_dog_${dogId}_thumb.jpeg`;
+
+        console.log('S3 이미지 복사 시작:', { oldImageKey, newImageKey });
+
+        try {
+            // 원본 이미지 존재 확인 및 복사
+            try {
+                await s3Client.send(new HeadObjectCommand({
+                    Bucket: S3_BUCKET,
+                    Key: oldImageKey
+                }));
+
+                // 원본 이미지 복사
+                await s3Client.send(new CopyObjectCommand({
+                    Bucket: S3_BUCKET,
+                    CopySource: `${S3_BUCKET}/${oldImageKey}`,
+                    Key: newImageKey
+                }));
+                console.log('원본 이미지 복사 완료');
+            } catch (err) {
+                console.log('원본 이미지가 S3에 없음:', oldImageKey);
+            }
+
+            // 썸네일 이미지 존재 확인 및 복사
+            try {
+                await s3Client.send(new HeadObjectCommand({
+                    Bucket: S3_BUCKET,
+                    Key: oldThumbKey
+                }));
+
+                // 썸네일 이미지 복사
+                await s3Client.send(new CopyObjectCommand({
+                    Bucket: S3_BUCKET,
+                    CopySource: `${S3_BUCKET}/${oldThumbKey}`,
+                    Key: newThumbKey
+                }));
+                console.log('썸네일 이미지 복사 완료');
+            } catch (err) {
+                console.log('썸네일 이미지가 S3에 없음:', oldThumbKey);
+            }
+        } catch (s3Error) {
+            console.error('S3 이미지 복사 중 에러:', s3Error);
+            // S3 에러는 무시하고 계속 진행 (이미지가 없을 수도 있음)
         }
 
         console.log('견사 이동 완료');
