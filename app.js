@@ -280,9 +280,9 @@ if (!fs.existsSync(walksDir)) {
     fs.mkdirSync(walksDir);
 }
 
-const dogsDir = path.join(__dirname, 'cage_dogs');
-if (!fs.existsSync(dogsDir)) {
-    fs.mkdirSync(dogsDir);
+const cageDogsDir = path.join(__dirname, 'cage_dogs');
+if (!fs.existsSync(cageDogsDir)) {
+    fs.mkdirSync(cageDogsDir);
 }
 
 const dogWalksDir = path.join(__dirname, 'cage_dog_walks');
@@ -307,7 +307,7 @@ app.get('/api/cages', (req, res) => {
     const cages = [];
     for (let i = startId; i <= endId; i++) {
         // 각 견사의 첫 번째 강아지 정보 가져오기
-        const dogsFilePath = path.join(dogsDir, `cage_${i}_dogs.json`);
+        const dogsFilePath = path.join(cageDogsDir, `cage_${i}_dogs.json`);
         let firstDogId = null;
         let imageUrl = `${S3_BASE_URL}/${i}_thumb.jpeg`;
 
@@ -495,7 +495,7 @@ app.post('/cage/:id/upload', upload.single('image'), async (req, res) => {
 // 견사별 강아지 목록 조회 (GET)
 app.get('/cage/:id/dogs', (req, res) => {
     const cageId = req.params.id;
-    const filePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+    const filePath = path.join(cageDogsDir, `cage_${cageId}_dogs.json`);
     let dogs = [];
     if (fs.existsSync(filePath)) {
         dogs = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -509,7 +509,7 @@ app.post('/cage/:id/dogs', (req, res) => {
     const { name } = req.body;
     if (!name) return res.status(400).json({ error: 'name 필요' });
 
-    const filePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+    const filePath = path.join(cageDogsDir, `cage_${cageId}_dogs.json`);
     let dogs = [];
     if (fs.existsSync(filePath)) {
         dogs = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -530,7 +530,7 @@ app.put('/cage/:id/dogs/:dogId', (req, res) => {
 
     if (!name) return res.status(400).json({ error: 'name 필요' });
 
-    const filePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+    const filePath = path.join(cageDogsDir, `cage_${cageId}_dogs.json`);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: '강아지 목록이 없습니다.' });
@@ -552,7 +552,7 @@ app.put('/cage/:id/dogs/:dogId', (req, res) => {
 app.delete('/cage/:id/dogs/:dogId', (req, res) => {
     const cageId = req.params.id;
     const dogId = req.params.dogId;
-    const filePath = path.join(dogsDir, `cage_${cageId}_dogs.json`);
+    const filePath = path.join(cageDogsDir, `cage_${cageId}_dogs.json`);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: '강아지 목록이 없습니다.' });
@@ -631,48 +631,67 @@ app.post('/cage/:id/dogs/:dogId/move', (req, res) => {
     const dogId = req.params.dogId;
     const { toCageId } = req.body;
 
+    console.log('견사 이동 요청:', { fromCageId, dogId, toCageId, toCageIdType: typeof toCageId });
+
     if (!toCageId) {
         return res.status(400).json({ error: 'toCageId 필요' });
     }
 
-    if (fromCageId === toCageId) {
+    // 타입 상관없이 값으로 비교
+    if (String(fromCageId) === String(toCageId)) {
         return res.status(400).json({ error: '같은 견사로는 이동할 수 없습니다' });
     }
 
     try {
         // 원래 견사에서 강아지 정보 가져오기
         const fromFilePath = path.join(cageDogsDir, `cage_${fromCageId}_dogs.json`);
+        console.log('원본 파일 경로:', fromFilePath);
+
         if (!fs.existsSync(fromFilePath)) {
+            console.log('원본 파일이 존재하지 않음');
             return res.status(404).json({ error: '원래 견사를 찾을 수 없습니다' });
         }
 
         let fromDogs = JSON.parse(fs.readFileSync(fromFilePath, 'utf-8'));
+        console.log('원본 견사 강아지들:', fromDogs);
+
         const dogIndex = fromDogs.findIndex(d => d.id === dogId);
+        console.log('강아지 인덱스:', dogIndex);
 
         if (dogIndex === -1) {
+            console.log('강아지를 찾을 수 없음');
             return res.status(404).json({ error: '강아지를 찾을 수 없습니다' });
         }
 
         const dog = fromDogs[dogIndex];
+        console.log('이동할 강아지:', dog);
 
         // 목적지 견사 파일 읽기 또는 생성
         const toFilePath = path.join(cageDogsDir, `cage_${toCageId}_dogs.json`);
+        console.log('목적지 파일 경로:', toFilePath);
+
         let toDogs = [];
         if (fs.existsSync(toFilePath)) {
             toDogs = JSON.parse(fs.readFileSync(toFilePath, 'utf-8'));
+            console.log('목적지 견사 강아지들:', toDogs);
+        } else {
+            console.log('목적지 견사 파일 없음, 새로 생성');
         }
 
         // 원래 견사에서 강아지 제거
         fromDogs.splice(dogIndex, 1);
         fs.writeFileSync(fromFilePath, JSON.stringify(fromDogs, null, 2));
+        console.log('원본 견사에서 강아지 제거 완료');
 
         // 목적지 견사에 강아지 추가
         toDogs.push(dog);
         fs.writeFileSync(toFilePath, JSON.stringify(toDogs, null, 2));
+        console.log('목적지 견사에 강아지 추가 완료');
 
         // 산책 기록 파일 이름 변경
         const oldWalkFile = path.join(dogWalksDir, `cage_${fromCageId}_dog_${dogId}_walks.json`);
         const newWalkFile = path.join(dogWalksDir, `cage_${toCageId}_dog_${dogId}_walks.json`);
+        console.log('산책 기록 파일 경로:', { oldWalkFile, newWalkFile });
 
         if (fs.existsSync(oldWalkFile)) {
             // 산책 기록 읽기
@@ -680,17 +699,22 @@ app.post('/cage/:id/dogs/:dogId/move', (req, res) => {
             // cageId 업데이트
             walks = walks.map(walk => ({
                 ...walk,
-                cageId: toCageId.toString()
+                cageId: String(toCageId)
             }));
             // 새 파일로 저장
             fs.writeFileSync(newWalkFile, JSON.stringify(walks, null, 2));
             // 기존 파일 삭제
             fs.unlinkSync(oldWalkFile);
+            console.log('산책 기록 파일 이동 완료');
+        } else {
+            console.log('산책 기록 파일 없음');
         }
 
+        console.log('견사 이동 완료');
         res.json({ success: true, message: '견사 이동이 완료되었습니다' });
     } catch (error) {
         console.error('견사 이동 에러:', error);
+        console.error('에러 스택:', error.stack);
         res.status(500).json({ error: '견사 이동 실패', details: error.message });
     }
 });
@@ -800,7 +824,7 @@ app.get('/api/statistics', (req, res) => {
     const statisticsMap = new Map(); // dogId를 키로 하는 맵
 
     // 먼저 모든 강아지를 0으로 초기화
-    const cageDogFiles = fs.readdirSync(dogsDir).filter(f => f.startsWith('cage_') && f.endsWith('_dogs.json'));
+    const cageDogFiles = fs.readdirSync(cageDogsDir).filter(f => f.startsWith('cage_') && f.endsWith('_dogs.json'));
     cageDogFiles.forEach(file => {
         const match = file.match(/cage_(\d+)_dogs\.json/);
         if (!match) return;
@@ -822,7 +846,7 @@ app.get('/api/statistics', (req, res) => {
         }
 
         // 강아지들 가져오기
-        const dogsFilePath = path.join(dogsDir, file);
+        const dogsFilePath = path.join(cageDogsDir, file);
         try {
             const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
             dogs.forEach(dog => {
