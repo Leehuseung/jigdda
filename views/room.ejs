@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><%= roomId %>호 - 직따</title>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -14,11 +14,15 @@
                 extend: {
                     colors: {
                         "primary": "#367d59",
-                        "primary-dark": "#2a6245",
-                        "background-light": "#f8f7f7",
+                        "primary-dark": "#2a6346",
+                        "background-light": "#FAFAFA",
                     },
                     fontFamily: {
-                        "display": ["Be Vietnam Pro", "sans-serif"]
+                        "display": ["Noto Sans KR", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'soft': '0 8px 30px rgba(0,0,0,0.04)',
+                        'card': '0 4px 20px rgba(0,0,0,0.02)',
                     }
                 },
             },
@@ -29,41 +33,47 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .ios-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
     </style>
 </head>
-<body class="bg-background-light text-[#131614] font-display overflow-x-hidden antialiased">
-    <div class="relative flex min-h-screen w-full flex-col pb-28">
+<body class="bg-background-light font-display text-slate-800 overflow-x-hidden antialiased">
+    <div class="relative flex min-h-screen w-full flex-col pb-32">
         <!-- Header -->
-        <header class="sticky top-0 z-30 flex items-center justify-between bg-background-light/95 px-4 py-4 backdrop-blur-md">
-            <a href="/kennel/1" class="flex size-10 items-center justify-center rounded-full bg-white shadow-sm transition-transform active:scale-95 ring-1 ring-black/5">
-                <span class="material-symbols-outlined text-[#131614]">arrow_back</span>
+        <header class="sticky top-0 z-30 flex items-center justify-between bg-white/80 px-5 py-4 backdrop-blur-xl transition-all">
+            <a href="/kennel/1" class="group flex size-10 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-gray-200 transition-all hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-gray-700 transition-transform group-hover:-translate-x-0.5">arrow_back</span>
             </a>
             <div class="flex flex-col items-center">
-                <h1 class="text-xl font-extrabold tracking-tight text-[#131614]"><%= roomId %>호</h1>
+                <h1 class="text-lg font-bold text-gray-900"><%= roomId %>호</h1>
             </div>
             <div class="w-10"></div>
         </header>
 
         <!-- Stats Section -->
-        <section class="px-4 pb-2 pt-2">
-            <div class="flex w-full gap-3 overflow-x-auto no-scrollbar">
-                <div class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5">
-                    <span id="totalCount" class="text-2xl font-bold tracking-tight text-primary">0</span>
-                    <span class="text-xs font-medium text-gray-500">총 마리수</span>
+        <section class="px-5 mt-2 mb-4">
+            <div class="flex w-full items-center justify-between rounded-2xl bg-white px-6 py-3.5 shadow-sm ring-1 ring-black/5">
+                <div class="flex flex-col items-center gap-0.5 flex-1 border-r border-gray-100 last:border-0">
+                    <span class="text-[11px] font-medium text-gray-400">총 마리수</span>
+                    <span id="totalCount" class="text-sm font-bold text-gray-900">0</span>
                 </div>
-                <div id="walkedStat" class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 opacity-60 grayscale">
-                    <span id="walkedCount" class="text-2xl font-bold tracking-tight text-gray-900">0</span>
-                    <span class="text-xs font-medium text-gray-500">산책 완료</span>
+                <div id="walkedStatContainer" class="flex flex-col items-center gap-0.5 flex-1 border-r border-gray-100 last:border-0 opacity-50">
+                    <span class="text-[11px] font-medium text-gray-400">완료</span>
+                    <span id="walkedCount" class="text-sm font-bold text-gray-900">0</span>
                 </div>
-                <div id="waitingStat" class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 bg-gradient-to-br from-white to-orange-50/50">
-                    <span id="waitingCount" class="text-2xl font-bold tracking-tight text-orange-500">0</span>
-                    <span class="text-xs font-medium text-gray-500">산책 대기</span>
+                <div id="waitingStatContainer" class="flex flex-col items-center gap-0.5 flex-1">
+                    <span class="text-[11px] font-medium text-orange-500/80">대기</span>
+                    <span id="waitingCount" class="text-sm font-bold text-orange-500">0</span>
                 </div>
             </div>
         </section>
 
         <!-- Dog List -->
-        <main id="dogList" class="flex flex-col gap-4 p-4">
+        <main id="dogList" class="flex flex-col gap-5 px-5">
             <!-- Loading -->
             <div id="loading" class="flex justify-center py-8">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -71,37 +81,26 @@
         </main>
 
         <!-- Room Navigation -->
-        <div class="fixed bottom-[90px] left-0 right-0 z-20 px-4 pointer-events-none">
-            <div class="flex items-center justify-between pointer-events-auto w-full max-w-lg mx-auto">
-                <!-- Previous Room -->
+        <div class="fixed bottom-[94px] left-0 right-0 z-20 flex justify-center pointer-events-none">
+            <div class="pointer-events-auto flex items-center bg-white/95 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.1)] ring-1 ring-black/5 p-1.5">
                 <% if (roomId > 1) { %>
-                <a href="/kennel/1/room/<%= roomId - 1 %>"
-                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-4 pr-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-gray-50 group-hover:bg-primary/10 transition-colors">
-                        <span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_back</span>
-                    </div>
-                    <div class="flex flex-col items-start">
-                        <span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">PREV</span>
-                        <span class="text-sm font-bold text-[#131614] leading-tight"><%= roomId - 1 %>호</span>
-                    </div>
+                <a href="/kennel/1/room/<%= roomId - 1 %>" class="flex items-center gap-2 pl-3 pr-4 py-2 rounded-full hover:bg-gray-100 transition-colors group">
+                    <span class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-gray-700 transition-colors">arrow_back</span>
+                    <span class="text-[11px] font-bold text-gray-600 group-hover:text-gray-900 transition-colors"><%= roomId - 1 %>호</span>
                 </a>
                 <% } else { %>
-                <div class="w-24"></div>
+                <div class="pl-3 pr-4 py-2"></div>
                 <% } %>
-                <!-- Next Room -->
+                <% if (roomId > 1 && roomId < 60) { %>
+                <div class="w-px h-4 bg-gray-200 mx-1"></div>
+                <% } %>
                 <% if (roomId < 60) { %>
-                <a href="/kennel/1/room/<%= roomId + 1 %>"
-                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-6 pr-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100">
-                    <div class="flex flex-col items-end">
-                        <span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">NEXT</span>
-                        <span class="text-sm font-bold text-[#131614] leading-tight"><%= roomId + 1 %>호</span>
-                    </div>
-                    <div class="flex size-8 items-center justify-center rounded-full bg-gray-50 group-hover:bg-primary/10 transition-colors">
-                        <span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
-                    </div>
+                <a href="/kennel/1/room/<%= roomId + 1 %>" class="flex items-center gap-2 pl-4 pr-3 py-2 rounded-full hover:bg-gray-100 transition-colors group">
+                    <span class="text-[11px] font-bold text-gray-600 group-hover:text-gray-900 transition-colors"><%= roomId + 1 %>호</span>
+                    <span class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-gray-700 transition-colors">arrow_forward</span>
                 </a>
                 <% } else { %>
-                <div class="w-24"></div>
+                <div class="pl-4 pr-3 py-2"></div>
                 <% } %>
             </div>
         </div>
@@ -114,7 +113,7 @@
                     <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">홈</span>
                 </a>
                 <a href="/kennel/1" class="flex-1 flex flex-col items-center gap-1 group">
-                    <span class="material-symbols-outlined text-[26px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+                    <span class="material-symbols-filled text-[26px] text-primary">pets</span>
                     <span class="text-[11px] font-bold text-primary">견사</span>
                 </a>
                 <a href="/statistics" class="flex-1 flex flex-col items-center gap-1 group">
@@ -125,7 +124,7 @@
         </nav>
 
         <!-- Gradient fade -->
-        <div class="fixed bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-white/80 via-white/40 to-transparent pointer-events-none"></div>
+        <div class="fixed bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none"></div>
     </div>
 
     <script>
@@ -143,7 +142,6 @@
         function getLastWalkText(walks) {
             if (!walks || walks.length === 0) return '기록 없음';
 
-            // 가장 최근 산책 찾기
             const sorted = [...walks].sort((a, b) => {
                 const dateA = new Date(a.time.replace(' ', 'T'));
                 const dateB = new Date(b.time.replace(' ', 'T'));
@@ -204,19 +202,19 @@
             document.getElementById('walkedCount').textContent = walked;
             document.getElementById('waitingCount').textContent = waiting;
 
-            // 스타일 업데이트
-            const walkedStat = document.getElementById('walkedStat');
-            const waitingStat = document.getElementById('waitingStat');
+            const walkedContainer = document.getElementById('walkedStatContainer');
+            const waitingContainer = document.getElementById('waitingStatContainer');
 
             if (walked > 0) {
-                walkedStat.classList.remove('opacity-60', 'grayscale');
+                walkedContainer.classList.remove('opacity-50');
             } else {
-                walkedStat.classList.add('opacity-60', 'grayscale');
+                walkedContainer.classList.add('opacity-50');
             }
 
             if (waiting === 0) {
-                waitingStat.classList.add('opacity-60', 'grayscale');
-                waitingStat.classList.remove('bg-gradient-to-br', 'from-white', 'to-orange-50/50');
+                waitingContainer.classList.add('opacity-50');
+            } else {
+                waitingContainer.classList.remove('opacity-50');
             }
         }
 
@@ -247,48 +245,48 @@
                 const dogNameEscaped = escapeHtml(dog.name);
 
                 return `
-                    <article class="group relative flex flex-col gap-4 rounded-3xl bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/5 transition-all hover:shadow-lg">
-                        <div class="flex items-start justify-between gap-4">
+                    <article class="group relative flex flex-col gap-5 rounded-[32px] bg-white p-5 shadow-[0_8px_24px_rgba(0,0,0,0.03)] ring-1 ring-gray-100 transition-all hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)] hover:-translate-y-0.5">
+                        <div class="flex items-center gap-5">
                             <!-- Image -->
-                            <div class="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100 shadow-inner">
+                            <div class="relative size-20 shrink-0">
                                 <img src="${imgUrl}"
                                      onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
                                      alt="${dogNameEscaped}"
-                                     class="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-110">
+                                     class="size-20 rounded-full object-cover ring-4 ring-gray-50">
                             </div>
                             <!-- Content -->
-                            <div class="flex flex-1 flex-col">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-bold text-gray-900">${dogNameEscaped}</h3>
+                            <div class="flex flex-1 flex-col justify-center">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="text-xl font-bold text-gray-900">${dogNameEscaped}</h3>
                                     ${status.walked ? `
-                                        <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/10">
+                                        <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
                                             완료
                                         </span>
                                     ` : ''}
                                 </div>
-                                <div class="mt-3 flex items-center gap-1.5 text-xs text-gray-400">
-                                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+                                <div class="mt-2 flex items-center gap-1 text-[11px] text-gray-400">
+                                    <span class="material-symbols-outlined text-[14px] text-gray-400">schedule</span>
                                     <span>마지막 산책: <strong class="text-gray-600">${status.lastWalkText}</strong></span>
                                 </div>
                                 ${status.walked ? `
-                                    <div class="mt-1 flex items-center gap-1.5 text-xs text-green-600">
-                                        <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                                        <span>오늘 ${status.walkTime} 산책 완료</span>
+                                    <div class="mt-1 flex items-center gap-1 text-[11px] text-emerald-600">
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        <span>오늘 ${status.walkTime} 산책</span>
                                     </div>
                                 ` : ''}
                             </div>
                         </div>
                         <!-- Action Button -->
                         ${!status.walked ? `
-                            <button class="walk-btn flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-[#2d6b4b] active:scale-[0.98]"
+                            <button class="walk-btn relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-br from-[#367d59] to-[#255c40] py-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 active:scale-[0.98]"
                                     data-dog-id="${dog.id}"
                                     data-dog-name="${dogNameEscaped}">
-                                <span class="material-symbols-outlined">pets</span>
+                                <span class="material-symbols-outlined text-[20px]">pets</span>
                                 산책 시작
                             </button>
                         ` : `
-                            <div class="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-100 py-4 text-base font-bold text-gray-400">
-                                <span class="material-symbols-outlined">check_circle</span>
+                            <div class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gray-100 py-4 text-sm font-bold text-gray-400">
+                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
                                 오늘 산책 완료
                             </div>
                         `}
