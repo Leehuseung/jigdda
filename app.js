@@ -539,6 +539,8 @@ app.get('/api/cages', (req, res) => {
 app.get('/api/kennel/:id/stats', (req, res) => {
     const kennelId = parseInt(req.params.id, 10);
 
+    console.log('[Stats API] kennelId:', kennelId, 'cageDogsDir:', cageDogsDir);
+
     // 현재는 kennel 1만 지원 (1~60 견사 전체)
     if (kennelId !== 1) {
         return res.json({ total: 0, walked: 0, percent: 0 });
@@ -559,6 +561,7 @@ app.get('/api/kennel/:id/stats', (req, res) => {
         try {
             const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
             totalDogs += dogs.length;
+            console.log(`[Stats API] cage ${cageId}: ${dogs.length} dogs`);
 
             // 각 강아지의 오늘 산책 여부 확인
             for (const dog of dogs) {
@@ -573,11 +576,13 @@ app.get('/api/kennel/:id/stats', (req, res) => {
                 }
             }
         } catch (err) {
-            console.error(`Error reading cage ${cageId}:`, err);
+            console.error(`[Stats API] Error reading cage ${cageId}:`, err);
         }
     }
 
     const percent = totalDogs > 0 ? Math.round((walkedDogs / totalDogs) * 100) : 0;
+
+    console.log(`[Stats API] Result: total=${totalDogs}, walked=${walkedDogs}, percent=${percent}`);
 
     res.json({
         total: totalDogs,
