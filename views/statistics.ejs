@@ -102,105 +102,32 @@
     </div>
 
     <script>
-        const S3_BASE_URL = 'https://jikddaz.s3.ap-northeast-2.amazonaws.com';
-        const MAX_CAGES = 60;
-
-        function getTodayString() {
-            const now = new Date();
-            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
         async function loadStatistics() {
-            const allDogs = [];
-            const today = getTodayString();
+            try {
+                const res = await fetch('/api/kennel/1/stats');
+                const { total, walked, percent } = await res.json();
+                const remaining = total - walked;
 
-            // 모든 견사의 강아지 데이터 로드
-            for (let cageId = 1; cageId <= MAX_CAGES; cageId++) {
-                try {
-                    const res = await fetch(`/cage/${cageId}/dogs`);
-                    const dogs = await res.json();
+                // UI 업데이트
+                document.getElementById('circularProgress').style.setProperty('--percent', `${percent}%`);
+                document.getElementById('percentText').innerHTML = `${percent}<span class="text-xl">%</span>`;
+                document.getElementById('statsText').textContent = `${walked}/${total} 마리 산책 완료`;
 
-                    for (const dog of dogs) {
-                        try {
-                            const walksRes = await fetch(`/cage/${cageId}/dogs/${dog.id}/walks`);
-                            const walks = await walksRes.json();
-                            const todayWalk = walks.find(w => w.time.startsWith(today));
-
-                            allDogs.push({
-                                ...dog,
-                                cageId,
-                                walked: !!todayWalk,
-                                walkTime: todayWalk ? todayWalk.time.split(' ')[1] : null
-                            });
-                        } catch (e) {
-                            allDogs.push({ ...dog, cageId, walked: false, walkTime: null });
-                        }
-                    }
-                } catch (e) {
-                    // 에러 무시
+                if (percent === 100) {
+                    document.getElementById('messageText').textContent = '오늘 산책 완료! 수고하셨습니다 🎉';
+                } else if (percent >= 80) {
+                    document.getElementById('messageText').textContent = `거의 다 됐어요! ${remaining}마리 남았습니다 💪`;
+                } else if (percent >= 50) {
+                    document.getElementById('messageText').textContent = `절반 넘었어요! ${remaining}마리 남았습니다 🐾`;
+                } else if (percent > 0) {
+                    document.getElementById('messageText').textContent = `목표까지 ${remaining}마리 남았어요! 힘내세요 🐕`;
+                } else {
+                    document.getElementById('messageText').textContent = '오늘의 산책을 시작해보세요!';
                 }
+            } catch (err) {
+                console.error('Error loading stats:', err);
+                document.getElementById('messageText').textContent = '통계를 불러올 수 없습니다';
             }
-
-            // 통계 계산
-            const total = allDogs.length;
-            const walked = allDogs.filter(d => d.walked).length;
-            const percent = total > 0 ? Math.round((walked / total) * 100) : 0;
-            const remaining = total - walked;
-
-            // UI 업데이트
-            document.getElementById('circularProgress').style.setProperty('--percent', `${percent}%`);
-            document.getElementById('percentText').innerHTML = `${percent}<span class="text-xl">%</span>`;
-            document.getElementById('statsText').textContent = `${walked}/${total} 마리 산책 완료`;
-
-            if (percent === 100) {
-                document.getElementById('messageText').textContent = '오늘 산책 완료! 수고하셨습니다 🎉';
-            } else if (percent >= 80) {
-                document.getElementById('messageText').textContent = `거의 다 됐어요! ${remaining}마리 남았습니다 💪`;
-            } else if (percent >= 50) {
-                document.getElementById('messageText').textContent = `절반 넘었어요! ${remaining}마리 남았습니다 🐾`;
-            } else if (percent > 0) {
-                document.getElementById('messageText').textContent = `목표까지 ${remaining}마리 남았어요! 힘내세요 🐕`;
-            } else {
-                document.getElementById('messageText').textContent = '오늘의 산책을 시작해보세요!';
-            }
-
-            // 강아지 목록 렌더링 (cageId 순으로 정렬)
-            allDogs.sort((a, b) => a.cageId - b.cageId);
-
-            const dogListHtml = allDogs.map(dog => {
-                const imgUrl = `${S3_BASE_URL}/cage_${dog.cageId}_dog_${dog.id}_thumb.jpeg`;
-                const nameEscaped = escapeHtml(dog.name);
-
-                return `
-                    <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100">
-                        <div class="flex items-center gap-3">
-                            <img src="${imgUrl}"
-                                 onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
-                                 class="w-10 h-10 rounded-lg object-cover bg-slate-200">
-                            <div>
-                                <p class="font-bold text-slate-900 text-sm">${nameEscaped}</p>
-                                <p class="text-xs text-slate-400">${dog.cageId}번 견사</p>
-                            </div>
-                        </div>
-                        ${dog.walked ? `
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-green-600 font-medium">${dog.walkTime}</span>
-                                <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                            </div>
-                        ` : `
-                            <span class="text-xs text-slate-400 font-medium">미산책</span>
-                        `}
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('dogList').innerHTML = dogListHtml || '<p class="text-center text-slate-400 py-4">등록된 강아지가 없습니다</p>';
         }
 
         loadStatistics();
