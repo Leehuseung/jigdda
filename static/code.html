@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>산책 통계 리포트</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#28bd66",
+                        "background-light": "#FBF9F5", // Overridden to match the warm cream plan
+                        "background-dark": "#1f2b2e",
+                        "warm-white": "#FCFAF8",
+                        "text-brown": "#6F5E4E",
+                        "text-brown-light": "#9C8C74",
+                        "accent-coral": "#F0A080"
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "Noto Sans KR", "sans-serif"],
+                        "body": ["Be Vietnam Pro", "Noto Sans KR", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "1.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for circular progress */
+        .conic-gradient-85 {
+            background: conic-gradient(#28bd66 85%, #E5E0D8 0);
+        }
+        
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-text-brown font-display antialiased overflow-x-hidden pb-24">
+<!-- Header -->
+<div class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-6 py-4 flex items-center justify-between">
+<h1 class="text-xl font-bold tracking-tight text-text-brown dark:text-white">산책 통계 리포트</h1>
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 transition-colors text-text-brown dark:text-white">
+<span class="material-symbols-outlined">calendar_month</span>
+</button>
+</div>
+<main class="flex flex-col gap-6 px-6 pt-2">
+<!-- Hero Card: Today's Performance -->
+<section class="bg-warm-white dark:bg-[#2A3437] rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(111,94,78,0.08)]">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-bold text-text-brown dark:text-white">오늘의 성과</h2>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">Today</span>
+</div>
+<div class="flex flex-col items-center justify-center py-2">
+<!-- Circular Progress -->
+<div class="relative w-48 h-48 rounded-full conic-gradient-85 flex items-center justify-center shadow-inner">
+<!-- Inner White Circle -->
+<div class="w-36 h-36 bg-warm-white dark:bg-[#2A3437] rounded-full flex flex-col items-center justify-center z-10 shadow-sm">
+<span class="text-4xl font-bold text-text-brown dark:text-white leading-none">85<span class="text-xl">%</span></span>
+<span class="text-xs text-text-brown-light mt-1 font-medium">달성률</span>
+</div>
+</div>
+</div>
+<div class="mt-6 flex flex-col items-center gap-1">
+<p class="text-primary font-bold text-lg">34/40 마리 산책 완료</p>
+<p class="text-text-brown-light text-sm">목표까지 6마리 남았어요! 힘내세요 🐾</p>
+</div>
+</section>
+<!-- Weekly Chart -->
+<section class="bg-warm-white dark:bg-[#2A3437] rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(111,94,78,0.08)]">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-lg font-bold text-text-brown dark:text-white">주간 통계</h2>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-primary mt-2"></span>
+<span class="text-xs text-text-brown-light mt-1">완료된 산책</span>
+</div>
+</div>
+<div class="flex items-end justify-between h-40 w-full gap-2 sm:gap-4 px-2">
+<!-- Bar Item: Mon -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-all rounded-t-lg" style="height: 45%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">월</span>
+</div>
+<!-- Bar Item: Tue -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-all rounded-t-lg" style="height: 60%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">화</span>
+</div>
+<!-- Bar Item: Wed -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-all rounded-t-lg" style="height: 35%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">수</span>
+</div>
+<!-- Bar Item: Thu -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-all rounded-t-lg" style="height: 75%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">목</span>
+</div>
+<!-- Bar Item: Fri -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-all rounded-t-lg" style="height: 50%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">금</span>
+</div>
+<!-- Bar Item: Sat -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/80 group-hover:bg-primary transition-all rounded-t-lg" style="height: 90%;"></div>
+</div>
+<span class="text-xs font-bold text-primary">토</span>
+</div>
+<!-- Bar Item: Sun -->
+<div class="flex flex-col items-center gap-3 flex-1 group cursor-pointer">
+<div class="relative w-full max-w-[24px] bg-[#EFEBE6] dark:bg-white/10 rounded-t-lg h-full overflow-hidden flex items-end">
+<div class="w-full bg-primary/20 group-hover:bg-primary/40 transition-all rounded-t-lg" style="height: 10%;"></div>
+</div>
+<span class="text-xs font-medium text-text-brown-light">일</span>
+</div>
+</div>
+</section>
+<!-- Kennel Comparison List -->
+<section class="bg-warm-white dark:bg-[#2A3437] rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(111,94,78,0.08)]">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-bold text-text-brown dark:text-white">견사별 현황</h2>
+<button class="text-xs font-medium text-text-brown-light flex items-center hover:text-primary">
+                    전체보기 <span class="material-symbols-outlined text-sm ml-1">chevron_right</span>
+</button>
+</div>
+<div class="flex flex-col gap-5">
+<!-- Item 1 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm font-bold text-text-brown dark:text-white">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-primary text-white flex items-center justify-center text-xs">1</span>
+<span>제 1 견사</span>
+</div>
+<span class="text-primary">92%</span>
+</div>
+<div class="w-full h-3 bg-[#EFEBE6] dark:bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm font-bold text-text-brown dark:text-white">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-[#EFEBE6] text-text-brown flex items-center justify-center text-xs">2</span>
+<span>제 2 견사</span>
+</div>
+<span class="text-text-brown">75%</span>
+</div>
+<div class="w-full h-3 bg-[#EFEBE6] dark:bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary/70 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm font-bold text-text-brown dark:text-white">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-[#EFEBE6] text-text-brown flex items-center justify-center text-xs">3</span>
+<span>제 3 견사</span>
+</div>
+<span class="text-accent-coral">40%</span>
+</div>
+<div class="w-full h-3 bg-[#EFEBE6] dark:bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent-coral rounded-full" style="width: 40%"></div>
+</div>
+<p class="text-[11px] text-accent-coral pl-9 pt-1 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">warning</span>
+                        도움이 필요해요
+                    </p>
+</div>
+</div>
+</section>
+<!-- Fun Extra: Top Walker -->
+<section class="bg-primary rounded-2xl p-6 shadow-lg text-white relative overflow-hidden">
+<!-- Abstract Pattern for background -->
+<div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+<div class="absolute -left-6 -bottom-6 w-24 h-24 bg-black/5 rounded-full blur-xl"></div>
+<div class="relative z-10 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white" style="font-size: 28px;">emoji_events</span>
+</div>
+<div>
+<h3 class="text-sm font-medium text-white/80">이달의 산책왕</h3>
+<p class="text-lg font-bold">김민수 매니저님 🎉</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-white/90 dark:bg-[#1f2b2e]/90 backdrop-blur-md border-t border-gray-100 dark:border-white/5 pb-safe pt-2 px-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.05)]">
+<div class="flex justify-between items-center h-16">
+<!-- Home -->
+<button class="flex flex-1 flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium">홈</span>
+</button>
+<!-- Record -->
+<button class="flex flex-1 flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">edit_note</span>
+<span class="text-[10px] font-medium">기록</span>
+</button>
+<!-- Stats (Active) -->
+<button class="flex flex-1 flex-col items-center gap-1 text-primary transition-colors relative">
+<span class="material-symbols-outlined text-[26px] fill-current">bar_chart</span>
+<span class="text-[10px] font-bold">통계</span>
+<span class="absolute -top-1 right-6 w-2 h-2 bg-accent-coral rounded-full animate-pulse"></span>
+</button>
+<!-- Settings -->
+<button class="flex flex-1 flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+<span class="text-[10px] font-medium">설정</span>
+</button>
+</div>
+</nav>
+<!-- Safe area spacing for bottom nav on mobile -->
+<div class="h-6"></div>
+</body></html>

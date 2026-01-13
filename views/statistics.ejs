@@ -2,526 +2,211 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>산책 통계 - 내사랑 바둑이</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>산책 통계 - 직따</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#367d59",
+                        "primary-dark": "#2a6245",
+                        "background-light": "#f6f7f7",
+                        "warm-white": "#FCFAF8",
+                        "text-brown": "#6F5E4E",
+                        "text-brown-light": "#9C8C74",
+                        "accent-coral": "#F0A080"
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "Noto Sans KR", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #667eea;
-            margin-bottom: 30px;
-            font-size: 32px;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .date-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        label {
-            font-weight: 600;
-            color: #555;
-        }
-
-        input[type="date"] {
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="date"]:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            padding: 10px 25px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .quick-select {
-            display: flex;
-            gap: 10px;
-        }
-
-        .quick-btn {
-            padding: 8px 16px;
-            background: #f0f0f0;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .quick-btn.active {
-            background: #764ba2;
-            color: white;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 500px;
-            margin-bottom: 30px;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            font-size: 18px;
-        }
-
-        .data-table {
-            margin-top: 30px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #555;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .clickable-row {
-            cursor: pointer;
-        }
-
-        .rank {
-            width: 50px;
-            text-align: center;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .walk-count {
-            text-align: center;
-        }
-
-        .dog-thumb {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-        }
-
-        .clickable-img {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .clickable-img:hover {
-            transform: scale(1.05);
-        }
-
-        .photo-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .photo-modal img {
-            max-width: 90vw;
-            max-height: 80vh;
-            border-radius: 16px;
-            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
-            background: #fff;
-            padding: 8px;
-        }
-
-        .back-btn {
-            margin-top: 20px;
-            width: 100%;
-            background: #6c757d;
-        }
-
-        .back-btn:hover {
-            background: #5a6268;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .chart-container {
-                height: 400px;
-            }
-
-            /* 모바일 테이블 스타일 */
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 6px 4px;
-            }
-
-            .rank {
-                width: 30px;
-                font-size: 11px;
-            }
-
-            .dog-thumb {
-                width: 40px;
-                height: 40px;
-            }
-
-            th {
-                font-size: 11px;
-            }
+        body { min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .ios-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+        .conic-gradient {
+            background: conic-gradient(#367d59 var(--percent, 0%), #E5E0D8 0);
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>📊 산책 통계</h1>
-
-    <div class="controls">
-        <div class="date-control">
-            <label for="startDate">시작일:</label>
-            <input type="date" id="startDate">
+<body class="bg-background-light text-text-brown font-display antialiased overflow-x-hidden">
+    <div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto bg-background-light pb-24 shadow-2xl">
+        <!-- Header -->
+        <div class="sticky top-0 z-20 bg-background-light/95 backdrop-blur-sm px-6 py-4 flex items-center justify-between">
+            <h1 class="text-xl font-bold tracking-tight text-text-brown">산책 통계 리포트</h1>
+            <button class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 transition-colors text-text-brown">
+                <span class="material-symbols-outlined">calendar_month</span>
+            </button>
         </div>
-        <div class="date-control">
-            <label for="endDate">종료일:</label>
-            <input type="date" id="endDate">
-        </div>
-        <button onclick="loadStatistics()">통계 조회</button>
+
+        <main class="flex flex-col gap-6 px-6 pt-2">
+            <!-- Hero Card: Today's Performance -->
+            <section class="bg-warm-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(111,94,78,0.08)]">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-bold text-text-brown">오늘의 성과</h2>
+                    <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">Today</span>
+                </div>
+                <div class="flex flex-col items-center justify-center py-2">
+                    <!-- Circular Progress -->
+                    <div id="circularProgress" class="relative w-48 h-48 rounded-full conic-gradient flex items-center justify-center shadow-inner" style="--percent: 0%;">
+                        <div class="w-36 h-36 bg-warm-white rounded-full flex flex-col items-center justify-center z-10 shadow-sm">
+                            <span id="percentText" class="text-4xl font-bold text-text-brown leading-none">0<span class="text-xl">%</span></span>
+                            <span class="text-xs text-text-brown-light mt-1 font-medium">달성률</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col items-center gap-1">
+                    <p id="statsText" class="text-primary font-bold text-lg">0/0 마리 산책 완료</p>
+                    <p id="messageText" class="text-text-brown-light text-sm">로딩중...</p>
+                </div>
+            </section>
+
+            <!-- Dog List Table -->
+            <section class="bg-warm-white rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(111,94,78,0.08)]">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-text-brown">강아지별 현황</h2>
+                </div>
+                <div id="dogList" class="flex flex-col gap-3 max-h-96 overflow-y-auto no-scrollbar">
+                    <div class="flex justify-center py-4">
+                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 ios-bottom-nav">
+            <div class="flex justify-around items-center max-w-md mx-auto pt-3 pb-4">
+                <a href="/dashboard" class="flex-1 flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">home</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">홈</span>
+                </a>
+                <a href="/kennel/1" class="flex-1 flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">pets</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">견사</span>
+                </a>
+                <div class="flex-1 flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined text-[26px] text-primary" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+                    <span class="text-[11px] font-bold text-primary">통계</span>
+                </div>
+            </div>
+            <div class="flex justify-center pb-2">
+                <div class="w-32 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+        </nav>
     </div>
 
-    <div class="quick-select">
-        <button class="quick-btn active" onclick="setDateRange(30, this)">최근 30일</button>
-        <button class="quick-btn" onclick="setDateRange(90, this)">최근 90일</button>
-    </div>
+    <script>
+        const S3_BASE_URL = 'https://jikddaz.s3.ap-northeast-2.amazonaws.com';
+        const MAX_CAGES = 60;
 
-    <div class="chart-container">
-        <canvas id="walkChart"></canvas>
-    </div>
+        function getTodayString() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        }
 
-    <div class="data-table">
-        <table id="dataTable">
-            <thead>
-            <tr>
-                <th class="rank">순위</th>
-                <th>사진</th>
-                <th>이름</th>
-                <th>견사</th>
-                <th class="walk-count">산책 횟수</th>
-            </tr>
-            </thead>
-            <tbody id="tableBody">
-            </tbody>
-        </table>
-    </div>
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
 
-    <button class="back-btn" onclick="location.href='/cages'">메인으로 돌아가기</button>
+        async function loadStatistics() {
+            const allDogs = [];
+            const today = getTodayString();
 
-    <!-- 사진 확대 모달 -->
-    <div id="photo-modal" class="photo-modal" style="display:none;">
-        <img id="modal-img" src="" alt="강아지 사진" />
-    </div>
-</div>
+            // 모든 견사의 강아지 데이터 로드
+            for (let cageId = 1; cageId <= MAX_CAGES; cageId++) {
+                try {
+                    const res = await fetch(`/cage/${cageId}/dogs`);
+                    const dogs = await res.json();
 
-<script>
-    let chart = null;
+                    for (const dog of dogs) {
+                        try {
+                            const walksRes = await fetch(`/cage/${cageId}/dogs/${dog.id}/walks`);
+                            const walks = await walksRes.json();
+                            const todayWalk = walks.find(w => w.time.startsWith(today));
 
-    // 날짜 범위 설정
-    function setDateRange(days, targetElement) {
-        const end = new Date();
-        const start = new Date();
-        start.setDate(start.getDate() - days);
-
-        document.getElementById('startDate').value = formatDate(start);
-        document.getElementById('endDate').value = formatDate(end);
-
-        // 활성 버튼 표시
-        document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-
-        // 클릭된 버튼 또는 기본 버튼 활성화
-        if (targetElement) {
-            targetElement.classList.add('active');
-        } else {
-            // 페이지 로드 시 기본으로 30일 버튼 활성화
-            const defaultBtn = document.querySelector('.quick-btn');
-            if (defaultBtn && days === 30) {
-                defaultBtn.classList.add('active');
+                            allDogs.push({
+                                ...dog,
+                                cageId,
+                                walked: !!todayWalk,
+                                walkTime: todayWalk ? todayWalk.time.split(' ')[1] : null
+                            });
+                        } catch (e) {
+                            allDogs.push({ ...dog, cageId, walked: false, walkTime: null });
+                        }
+                    }
+                } catch (e) {
+                    // 에러 무시
+                }
             }
+
+            // 통계 계산
+            const total = allDogs.length;
+            const walked = allDogs.filter(d => d.walked).length;
+            const percent = total > 0 ? Math.round((walked / total) * 100) : 0;
+            const remaining = total - walked;
+
+            // UI 업데이트
+            document.getElementById('circularProgress').style.setProperty('--percent', `${percent}%`);
+            document.getElementById('percentText').innerHTML = `${percent}<span class="text-xl">%</span>`;
+            document.getElementById('statsText').textContent = `${walked}/${total} 마리 산책 완료`;
+
+            if (percent === 100) {
+                document.getElementById('messageText').textContent = '오늘 산책 완료! 수고하셨습니다 🎉';
+            } else if (percent >= 80) {
+                document.getElementById('messageText').textContent = `거의 다 됐어요! ${remaining}마리 남았습니다 💪`;
+            } else if (percent >= 50) {
+                document.getElementById('messageText').textContent = `절반 넘었어요! ${remaining}마리 남았습니다 🐾`;
+            } else if (percent > 0) {
+                document.getElementById('messageText').textContent = `목표까지 ${remaining}마리 남았어요! 힘내세요 🐕`;
+            } else {
+                document.getElementById('messageText').textContent = '오늘의 산책을 시작해보세요!';
+            }
+
+            // 강아지 목록 렌더링 (cageId 순으로 정렬)
+            allDogs.sort((a, b) => a.cageId - b.cageId);
+
+            const dogListHtml = allDogs.map(dog => {
+                const imgUrl = `${S3_BASE_URL}/cage_${dog.cageId}_dog_${dog.id}_thumb.jpeg`;
+                const nameEscaped = escapeHtml(dog.name);
+
+                return `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <img src="${imgUrl}"
+                                 onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
+                                 class="w-10 h-10 rounded-lg object-cover bg-slate-200">
+                            <div>
+                                <p class="font-bold text-slate-900 text-sm">${nameEscaped}</p>
+                                <p class="text-xs text-slate-400">${dog.cageId}번 견사</p>
+                            </div>
+                        </div>
+                        ${dog.walked ? `
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-green-600 font-medium">${dog.walkTime}</span>
+                                <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                            </div>
+                        ` : `
+                            <span class="text-xs text-slate-400 font-medium">미산책</span>
+                        `}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('dogList').innerHTML = dogListHtml || '<p class="text-center text-slate-400 py-4">등록된 강아지가 없습니다</p>';
         }
 
         loadStatistics();
-    }
-
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    // 통계 데이터 로드
-    async function loadStatistics() {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-
-        if (!startDate || !endDate) {
-            Swal.fire('오류', '시작일과 종료일을 선택해주세요', 'error');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/statistics?startDate=${startDate}&endDate=${endDate}`);
-            const data = await response.json();
-
-            if (data.error) {
-                Swal.fire('오류', data.error, 'error');
-                return;
-            }
-
-            displayStatistics(data);
-        } catch (error) {
-            console.error('통계 로드 실패:', error);
-            Swal.fire('오류', '통계를 불러오는데 실패했습니다', 'error');
-        }
-    }
-
-    // 통계 데이터 표시
-    function displayStatistics(data) {
-        if (data.length === 0) {
-            document.querySelector('.chart-container').innerHTML = '<div class="no-data">선택한 기간에 산책 기록이 없습니다</div>';
-            document.getElementById('tableBody').innerHTML = '';
-            return;
-        }
-
-        // 차트 그리기
-        drawChart(data);
-
-        // 테이블 업데이트
-        updateTable(data);
-    }
-
-    // 차트 그리기
-    function drawChart(data) {
-        const ctx = document.getElementById('walkChart');
-        const container = document.querySelector('.chart-container');
-        container.innerHTML = '<canvas id="walkChart"></canvas>';
-
-        const labels = data.map(item => {
-            return `${item.dogName} (${item.cageName})`;
-        });
-        const values = data.map(item => item.walkCount);
-
-        // 그라데이션 색상 생성
-        const colors = data.map((_, index) => {
-            const hue = (index * 360 / data.length) % 360;
-            return `hsla(${hue}, 70%, 60%, 0.8)`;
-        });
-
-        if (chart) {
-            chart.destroy();
-        }
-
-        chart = new Chart(document.getElementById('walkChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '산책 횟수',
-                    data: values,
-                    backgroundColor: colors,
-                    borderColor: colors.map(c => c.replace('0.8', '1')),
-                    borderWidth: 2,
-                    borderRadius: 8,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: '강아지별 산책 횟수',
-                        font: {
-                            size: 18,
-                            weight: 'bold'
-                        },
-                        padding: 20
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `산책 횟수: ${context.parsed.y}회`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        },
-                        title: {
-                            display: true,
-                            text: '횟수',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // 테이블 업데이트
-    function updateTable(data) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-
-        data.forEach((item, index) => {
-            const row = document.createElement('tr');
-            const thumbUrl = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${item.cageId}_dog_${item.dogId}_thumb.jpeg`;
-
-            row.classList.add('clickable-row');
-            row.setAttribute('data-cage-id', item.cageId);
-            row.setAttribute('data-dog-id', item.dogId);
-
-            row.innerHTML = `
-                <td class="rank">${index + 1}</td>
-                <td class="photo-cell"><img src="${thumbUrl}" alt="${item.dogName}" class="dog-thumb clickable-img" data-cage-id="${item.cageId}" data-dog-id="${item.dogId}" onerror="this.onerror=null; this.src='/img/no-image.svg'"></td>
-                <td>${item.dogName}</td>
-                <td>${item.cageId}번</td>
-                <td class="walk-count"><strong>${item.walkCount}회</strong></td>
-            `;
-            tbody.appendChild(row);
-        });
-
-        // 행 클릭 이벤트 - 견사 페이지로 이동 (강아지 ID 포함)
-        document.querySelectorAll('.clickable-row').forEach(row => {
-            row.addEventListener('click', function() {
-                const cageId = this.getAttribute('data-cage-id');
-                const dogId = this.getAttribute('data-dog-id');
-                window.location.href = `/cage/${cageId}?dogId=${dogId}`;
-            });
-        });
-
-        // 이미지 클릭 이벤트 - 모달 열기 (이벤트 전파 막기)
-        document.querySelectorAll('.clickable-img').forEach(img => {
-            img.addEventListener('click', function(e) {
-                e.stopPropagation(); // 행 클릭 이벤트 전파 막기
-
-                const cageId = this.getAttribute('data-cage-id');
-                const dogId = this.getAttribute('data-dog-id');
-                const originalSrc = `https://jikddaz.s3.ap-northeast-2.amazonaws.com/cage_${cageId}_dog_${dogId}.jpeg`;
-
-                const modal = document.getElementById('photo-modal');
-                const modalImg = document.getElementById('modal-img');
-
-                modalImg.src = originalSrc;
-                modal.style.display = 'flex';
-            });
-        });
-    }
-
-    // 모달 닫기
-    document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('photo-modal');
-        modal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    });
-
-    // 페이지 로드 시 기본 통계 표시 (최근 30일)
-    window.addEventListener('DOMContentLoaded', () => {
-        setDateRange(30);
-    });
-</script>
+    </script>
 </body>
 </html>
