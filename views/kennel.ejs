@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>견사 목록 - 직따</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#367d59",
+                        "primary-dark": "#2a6245",
+                        "background-light": "#f6f7f7",
+                        "surface-light": "#ffffff",
+                        "accent-warning": "#d97706",
+                        "accent-danger": "#dc2626",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            min-height: 100dvh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        summary { list-style: none; }
+        summary::-webkit-details-marker { display: none; }
+        .ios-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+        details[open] .expand-icon { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-background-light text-slate-800 font-display min-h-screen">
+    <div class="mx-auto max-w-md min-h-screen bg-background-light relative flex flex-col shadow-2xl">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 bg-primary text-white px-5 pt-12 pb-4 rounded-b-3xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <button onclick="history.back()" class="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
+                    <span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+                </button>
+                <div class="text-center">
+                    <h1 class="text-xl font-bold tracking-tight">견사 목록</h1>
+                    <p class="text-xs opacity-80 font-medium">방 목록</p>
+                </div>
+                <div class="w-10"></div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10">
+                <div class="flex items-end justify-between text-xs mb-1.5 opacity-90 font-medium">
+                    <div class="flex items-center gap-2">
+                        <span>전체 <span id="totalCount" class="font-bold">0</span></span>
+                        <span class="w-1 h-1 bg-white/40 rounded-full"></span>
+                        <span>산책 완료 <span id="walkedCount" class="font-bold">0</span></span>
+                    </div>
+                    <span class="text-orange-200">남음 <span id="remainingCount" class="font-bold">0</span></span>
+                </div>
+                <div class="h-3 w-full bg-black/20 rounded-full overflow-hidden flex">
+                    <div id="progressWalked" class="bg-white h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="progressRemaining" class="bg-orange-300 h-full transition-all duration-500" style="width: 100%"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filter Tabs -->
+        <div class="px-4 pt-4">
+            <div class="flex gap-2 bg-white rounded-xl p-1 shadow-soft">
+                <button data-filter="all" class="filter-tab flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all bg-primary text-white">
+                    전체
+                </button>
+                <button data-filter="walked" class="filter-tab flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all text-slate-500 hover:bg-slate-50">
+                    산책 완료
+                </button>
+                <button data-filter="remaining" class="filter-tab flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all text-slate-500 hover:bg-slate-50">
+                    미산책
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main id="roomList" class="flex-1 px-4 py-4 space-y-3 mb-24">
+            <!-- Loading -->
+            <div id="loading" class="flex justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 ios-bottom-nav">
+            <div class="flex justify-around items-center max-w-md mx-auto pt-3 pb-4">
+                <a href="/cages" class="flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">home</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">홈</span>
+                </a>
+                <button class="flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+                    <span class="text-[11px] font-bold text-primary">견사</span>
+                </button>
+                <a href="/statistics" class="flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">bar_chart</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">통계</span>
+                </a>
+                <a href="/adminjigdda" class="flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">settings</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">설정</span>
+                </a>
+            </div>
+            <div class="flex justify-center pb-2">
+                <div class="w-32 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const S3_BASE_URL = 'https://jikddaz.s3.ap-northeast-2.amazonaws.com';
+        const MAX_CAGES = 60;
+
+        let rooms = []; // { cageId, dogs: [], walkStatus: { dogId: { walked, walkTime } }, allWalked }
+        let currentFilter = 'all';
+
+        // 오늘 날짜 문자열 (YYYY-MM-DD)
+        function getTodayString() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        }
+
+        // 모든 방(견사) 데이터 로드
+        async function loadRooms() {
+            rooms = [];
+
+            // 1~60 견사 데이터 로드
+            const promises = [];
+            for (let i = 1; i <= MAX_CAGES; i++) {
+                promises.push(loadRoom(i));
+            }
+
+            await Promise.all(promises);
+
+            // 강아지가 있는 방만 필터링
+            rooms = rooms.filter(r => r.dogs.length > 0);
+
+            updateStats();
+            renderRooms();
+        }
+
+        // 개별 방 데이터 로드
+        async function loadRoom(cageId) {
+            try {
+                const res = await fetch(`/cage/${cageId}/dogs`);
+                const dogs = await res.json();
+
+                if (dogs.length === 0) return;
+
+                const walkStatus = {};
+                const today = getTodayString();
+
+                // 각 강아지의 산책 기록 로드
+                await Promise.all(dogs.map(async (dog) => {
+                    try {
+                        const walksRes = await fetch(`/cage/${cageId}/dogs/${dog.id}/walks`);
+                        const walks = await walksRes.json();
+                        const todayWalk = walks.find(w => w.time.startsWith(today));
+
+                        walkStatus[dog.id] = {
+                            walked: !!todayWalk,
+                            walkTime: todayWalk ? todayWalk.time.split(' ')[1] : null
+                        };
+                    } catch (e) {
+                        walkStatus[dog.id] = { walked: false, walkTime: null };
+                    }
+                }));
+
+                // 모든 강아지가 산책했는지 확인
+                const allWalked = dogs.length > 0 && dogs.every(d => walkStatus[d.id]?.walked);
+
+                rooms.push({
+                    cageId,
+                    dogs,
+                    walkStatus,
+                    allWalked
+                });
+            } catch (e) {
+                // 에러 무시
+            }
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const total = rooms.length;
+            const walked = rooms.filter(r => r.allWalked).length;
+            const remaining = total - walked;
+            const percent = total > 0 ? (walked / total) * 100 : 0;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('walkedCount').textContent = walked;
+            document.getElementById('remainingCount').textContent = remaining;
+            document.getElementById('progressWalked').style.width = `${percent}%`;
+            document.getElementById('progressRemaining').style.width = `${100 - percent}%`;
+        }
+
+        // HTML 이스케이프 함수
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // 열린 details 상태 저장
+        let openCageIds = new Set();
+
+        // 방 목록 렌더링
+        function renderRooms() {
+            const container = document.getElementById('roomList');
+            const loadingEl = document.getElementById('loading');
+            if (loadingEl) loadingEl.style.display = 'none';
+
+            // 필터 적용
+            let filteredRooms = rooms;
+            if (currentFilter === 'walked') {
+                filteredRooms = rooms.filter(r => r.allWalked);
+            } else if (currentFilter === 'remaining') {
+                filteredRooms = rooms.filter(r => !r.allWalked);
+            }
+
+            // cageId 순으로 정렬
+            filteredRooms.sort((a, b) => a.cageId - b.cageId);
+
+            if (filteredRooms.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <span class="material-symbols-outlined text-[48px] mb-2">pets</span>
+                        <p class="font-medium">${currentFilter === 'all' ? '등록된 방이 없습니다' : '해당하는 방이 없습니다'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredRooms.map(room => {
+                const { cageId, dogs, walkStatus, allWalked } = room;
+
+                // 방 이름: 강아지 이름들을 & 로 연결
+                const roomName = escapeHtml(dogs.map(d => d.name).join(' & '));
+
+                // 산책 완료된 강아지 수
+                const walkedDogs = dogs.filter(d => walkStatus[d.id]?.walked).length;
+
+                // 강아지 썸네일들 (background-image는 onerror 불가, 그냥 빈 이미지 허용)
+                const dogThumbs = dogs.slice(0, 3).map(d => {
+                    const imgUrl = `${S3_BASE_URL}/cage_${cageId}_dog_${d.id}_thumb.jpeg`;
+                    return `<img src="${imgUrl}"
+                                 onerror="this.onerror=null; this.style.display='none'"
+                                 class="w-6 h-6 rounded-full ring-2 ring-white object-cover bg-slate-300">`;
+                }).join('');
+
+                // 열린 상태 확인
+                const isOpen = openCageIds.has(cageId);
+
+                return `
+                    <div class="room-card group relative rounded-2xl bg-white shadow-soft border border-slate-100 overflow-hidden transition-all hover:shadow-lg ${allWalked ? 'opacity-70' : ''}"
+                         data-cage-id="${cageId}" data-all-walked="${allWalked}">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 ${allWalked ? 'bg-slate-300' : 'bg-accent-warning'}"></div>
+                        <details class="peer w-full" ${isOpen ? 'open' : ''}>
+                            <summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex flex-col items-center justify-center h-12 w-12 ${allWalked ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-100'} rounded-xl border">
+                                        <span class="text-[9px] font-bold ${allWalked ? 'text-slate-400' : 'text-orange-400'} uppercase">Rm</span>
+                                        <span class="text-lg font-bold ${allWalked ? 'text-slate-400' : 'text-orange-700'} -mt-1">${cageId}</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold ${allWalked ? 'text-slate-600' : 'text-slate-900'} text-base">${roomName}</h3>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            ${allWalked ? `
+                                                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                                                    <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span> 완료
+                                                </span>
+                                            ` : `
+                                                <div class="flex -space-x-2">${dogThumbs}</div>
+                                                <span class="text-xs ${walkedDogs > 0 ? 'text-primary' : 'text-orange-600'} font-medium">
+                                                    ${walkedDogs}/${dogs.length} 산책
+                                                </span>
+                                            `}
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined expand-icon text-slate-400 transition-transform duration-300">expand_more</span>
+                            </summary>
+                            <div class="border-t border-slate-100 bg-slate-50/50 p-3 space-y-2">
+                                ${dogs.map(dog => {
+                                    const status = walkStatus[dog.id] || { walked: false };
+                                    const imgUrl = `${S3_BASE_URL}/cage_${cageId}_dog_${dog.id}_thumb.jpeg`;
+                                    const dogNameEscaped = escapeHtml(dog.name);
+
+                                    return `
+                                        <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
+                                            <div class="flex items-center gap-3">
+                                                <img src="${imgUrl}"
+                                                     onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
+                                                     class="w-12 h-12 rounded-lg object-cover bg-slate-200">
+                                                <div>
+                                                    <p class="font-bold text-slate-900 leading-tight">${dogNameEscaped}</p>
+                                                    ${status.walked ? `
+                                                        <p class="text-xs text-green-600 font-medium">${status.walkTime} 산책 완료</p>
+                                                    ` : `
+                                                        <p class="text-xs text-slate-500">산책 대기</p>
+                                                    `}
+                                                </div>
+                                            </div>
+                                            ${!status.walked ? `
+                                                <button class="walk-btn bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-1 active:scale-95 transition-transform"
+                                                        data-cage-id="${cageId}"
+                                                        data-dog-id="${dog.id}"
+                                                        data-dog-name="${dogNameEscaped}">
+                                                    <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                                    산책
+                                                </button>
+                                            ` : `
+                                                <span class="material-symbols-outlined text-green-500 text-[24px]">check_circle</span>
+                                            `}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </details>
+                    </div>
+                `;
+            }).join('');
+
+            // details toggle 이벤트 리스너 추가
+            container.querySelectorAll('details').forEach(details => {
+                details.addEventListener('toggle', (e) => {
+                    const cageId = parseInt(details.closest('.room-card').dataset.cageId);
+                    if (details.open) {
+                        openCageIds.add(cageId);
+                    } else {
+                        openCageIds.delete(cageId);
+                    }
+                });
+            });
+        }
+
+        // 산책 시작
+        async function startWalk(cageId, dogId, dogName) {
+            const result = await Swal.fire({
+                title: `${dogName}`,
+                text: '산책을 시작할까요?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#367d59',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: '산책 시작',
+                cancelButtonText: '취소'
+            });
+
+            if (!result.isConfirmed) return;
+
+            const now = new Date();
+            const time = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // API 호출
+            const res = await fetch(`/cage/${cageId}/dogs/${dogId}/walk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ time })
+            });
+
+            if (!res.ok) {
+                Swal.fire('오류', '서버 오류가 발생했습니다', 'error');
+                return;
+            }
+
+            // 해당 방의 walkStatus 업데이트 (타입 통일)
+            const cageIdNum = Number(cageId);
+            const room = rooms.find(r => Number(r.cageId) === cageIdNum);
+            console.log('찾은 room:', room, 'cageId:', cageIdNum, 'dogId:', dogId);
+
+            if (room) {
+                room.walkStatus[dogId] = {
+                    walked: true,
+                    walkTime: time.split(' ')[1]
+                };
+                // 모든 강아지 산책 완료 여부 업데이트
+                room.allWalked = room.dogs.every(d => room.walkStatus[d.id]?.walked);
+                console.log('업데이트된 walkStatus:', room.walkStatus);
+                console.log('allWalked:', room.allWalked);
+            } else {
+                console.error('room을 찾지 못함! rooms:', rooms);
+            }
+
+            updateStats();
+            renderRooms();
+
+            Swal.fire({
+                title: '산책 완료!',
+                text: `${dogName} 산책이 기록되었습니다`,
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+
+        // 이벤트 위임: 산책 버튼 클릭
+        document.getElementById('roomList').addEventListener('click', (e) => {
+            const btn = e.target.closest('.walk-btn');
+            if (!btn) return;
+
+            const cageId = parseInt(btn.dataset.cageId);
+            const dogId = btn.dataset.dogId;
+            const dogName = btn.dataset.dogName;
+
+            startWalk(cageId, dogId, dogName);
+        });
+
+        // 필터 탭 클릭
+        document.querySelectorAll('.filter-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+
+                // 탭 스타일 업데이트
+                document.querySelectorAll('.filter-tab').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white');
+                    b.classList.add('text-slate-500');
+                });
+                btn.classList.add('bg-primary', 'text-white');
+                btn.classList.remove('text-slate-500');
+
+                renderRooms();
+            });
+        });
+
+        // 초기 로드
+        loadRooms();
+    </script>
+</body>
+</html>

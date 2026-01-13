@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Room List - Kennel 1</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#367d59",
+                        "primary-dark": "#2a6245",
+                        "background-light": "#f6f7f7",
+                        "background-dark": "#151d19",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e2923",
+                        "accent-warning": "#d97706",
+                        "accent-danger": "#dc2626",
+                        "accent-info": "#0284c7",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "inner-glow": "inset 0 2px 4px 0 rgba(255, 255, 255, 0.3)"
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        summary {
+            list-style: none;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        .ios-bottom-nav {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen">
+<div class="mx-auto max-w-md min-h-screen bg-background-light dark:bg-background-dark relative flex flex-col shadow-2xl">
+<header class="sticky top-0 z-50 bg-primary text-white px-5 pt-12 pb-4 rounded-b-3xl shadow-lg">
+<div class="flex items-center justify-between mb-4">
+<button class="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+</button>
+<div class="text-center">
+<h1 class="text-xl font-bold tracking-tight">1견사</h1>
+<p class="text-xs opacity-80 font-medium">방 목록</p>
+</div>
+<button class="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors relative">
+<span class="material-symbols-outlined text-[24px]">filter_alt</span>
+</button>
+</div>
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10">
+<div class="flex items-end justify-between text-xs mb-1.5 opacity-90 font-medium">
+<div class="flex items-center gap-2">
+<span>전체 <span class="font-bold">30</span></span>
+<span class="w-1 h-1 bg-white/40 rounded-full"></span>
+<span>산책 완료 <span class="font-bold">18</span></span>
+</div>
+<span class="text-orange-200">남음 <span class="font-bold">12</span></span>
+</div>
+<div class="h-3 w-full bg-black/20 rounded-full overflow-hidden flex">
+<div class="bg-white h-full" style="width: 60%"></div>
+<div class="bg-orange-300 h-full" style="width: 40%"></div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 py-6 space-y-4 mb-24">
+<div class="group relative rounded-2xl bg-white dark:bg-surface-dark shadow-soft border border-slate-100 dark:border-slate-800 overflow-hidden opacity-70">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-slate-300"></div>
+<details class="peer w-full">
+<summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center justify-center h-12 w-12 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+<span class="text-[9px] font-bold text-slate-400 uppercase">Rm</span>
+<span class="text-lg font-bold text-slate-400 -mt-1">101</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-600 dark:text-white text-base">Bella &amp; Max</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/20 px-2 py-0.5 text-[10px] font-semibold text-green-700 dark:text-green-400">
+<span class="material-symbols-outlined text-[14px] mr-1">check_circle</span> Complete
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300">expand_more</span>
+</summary>
+<div class="p-3 bg-slate-50/50 border-t border-slate-100">
+<p class="text-xs text-center text-slate-400">Walked by Sarah at 9:30 AM</p>
+</div>
+</details>
+</div>
+<div class="group relative rounded-2xl bg-white dark:bg-surface-dark shadow-soft border border-slate-100 dark:border-slate-800 overflow-hidden transition-all hover:shadow-lg">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-warning"></div>
+<details class="peer w-full" open="">
+<summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center justify-center h-12 w-12 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800/30">
+<span class="text-[9px] font-bold text-orange-400 uppercase">Rm</span>
+<span class="text-lg font-bold text-orange-700 dark:text-orange-400 -mt-1">102</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-900 dark:text-white text-base">Rocky &amp; Daisy</h3>
+<div class="flex items-center gap-2 mt-1">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full ring-2 ring-white dark:ring-surface-dark bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD-OnEk0n-4h2XNK3sJGTGCWqX-7Q8fRQEYifdVmt95KnCooeWPeWxCTqO4zJlobZJakjG5DgulYWCVaO5y3D9Mm_bilYbNL0M287NMKBPtkMqkv4t2XRnULUQlCjQIydfVhXERajgQ1TITTtjDCKUS7YD2E6JOvmQWebaab_98h2NF3uTUFR-qOgIu9sQnAcSNmpo1rXXYR8l4V-UggjV48gjqjO9OLBvldltdGftRZHmM59VqqlDd_gm9FgK9Mxr25IftwIOuQrw');"></div>
+<div class="w-6 h-6 rounded-full ring-2 ring-white dark:ring-surface-dark bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBrT3glbD1NXPTzwwBOF-z-10-743dLNMjVXfEpO6guLgecAu2aIVbPavSqJ--mbMqn8xgN_TuwrOggHmLMx8MEcRyI6MseJUaJ0Rjl6swZ-cQBh1r4VJQVCiKOqfPPcAqnYi-xtbJ4c8zbymyio1X6SmETB5tha84nS4DvQoz1trqNpKtsRUP8rgKEj2XTI202wmox3QoeNJ5wSvd0k8V8fIp_mXW044LRe_eQPUh3NVW5cMSJDXEAghrQU9NSk9Cvnud7WTbdhtk');"></div>
+</div>
+<span class="text-xs text-orange-600 font-semibold">Reactive</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 transition-transform duration-300 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 p-3 space-y-3">
+<div class="flex items-center justify-between p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-100 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCn-DZcRQrqvN8N9MSqnZYVX0kkVxT9fitOAXc6cB3jmKUHnak_UbCZQ401s4KgOe59sq4xqkqIffBd7X2DD8zQJNuHvgMqKX02X98WDTfQNauA855FYnXsG_x_wPI4WEeE1Z8moTJIDkMKq9HSbEjL8NE7oZ5An15z_uHoBawRZaqq0c1x_fnyRxEd1lqL8-CsFpX8q4gmbpypYjG5IxwuAWBrmI50Iem5ko1eXF3bSfcInJ9ZMxyNLmZ4zqahv5VNKdJXTe9RopI');"></div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white leading-tight">Rocky</p>
+<p class="text-xs text-slate-500">3y • No other dogs</p>
+</div>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                Start Walk
+                            </button>
+</div>
+<div class="flex items-center justify-between p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-100 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBz698_HTrqc4Fx3UHLfJdQExzcwfj99pIIlob2Sq_rjSFFsWHJWcUfd50ytiuzpObMYWLbHl-A9O7yawVgUl7n1vv1qmHXsDYX7LR9n9_a9AZETxcj-oWzZ5VyRz-ZiTkdoWGv2TrO54HXdz7Y3P2ARGBcQylQ8otjg5cH6CRca3F2dgLSCbCbXy1Zrmmm_-_INsD6kV4pqc_19I_GRbrkGNUlPW3reWyhJLVMpD5Z-JiB5jZZanEL83agAyH4ozHcQpIFotMsMvQ');"></div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white leading-tight">Daisy</p>
+<p class="text-xs text-slate-500">1y • Lab</p>
+</div>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                Start Walk
+                            </button>
+</div>
+</div>
+</details>
+</div>
+<div class="group relative rounded-2xl bg-white dark:bg-surface-dark shadow-soft border border-slate-100 dark:border-slate-800 overflow-hidden transition-all hover:shadow-lg">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<details class="peer w-full">
+<summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center justify-center h-12 w-12 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+<span class="text-[9px] font-bold text-slate-400 uppercase">Rm</span>
+<span class="text-lg font-bold text-slate-700 dark:text-slate-200 -mt-1">103</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-900 dark:text-white text-base">Luna, Duke &amp; Cooper</h3>
+<div class="flex items-center gap-2 mt-1">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full ring-2 ring-white bg-slate-300"></div>
+<div class="w-6 h-6 rounded-full ring-2 ring-white bg-slate-400"></div>
+<div class="w-6 h-6 rounded-full ring-2 ring-white bg-slate-500"></div>
+</div>
+<span class="text-xs text-slate-500 font-medium">Ready for morning</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 transition-transform duration-300 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 p-3 space-y-3">
+<div class="flex items-center justify-between p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-100 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200"></div>
+<div><p class="font-bold text-slate-900 leading-tight">Luna</p><p class="text-xs text-slate-500">Husky</p></div>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span> Start Walk
+                            </button>
+</div>
+<div class="flex items-center justify-between p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-100 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200"></div>
+<div><p class="font-bold text-slate-900 leading-tight">Duke</p><p class="text-xs text-slate-500">Beagle</p></div>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span> Start Walk
+                            </button>
+</div>
+</div>
+</details>
+</div>
+<div class="flex flex-col gap-4 opacity-60">
+<div class="h-20 bg-white rounded-2xl border border-slate-100 flex items-center px-4 justify-between">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 bg-slate-100 rounded-xl"></div>
+<div class="h-4 w-32 bg-slate-100 rounded"></div>
+</div>
+<div class="h-6 w-6 bg-slate-100 rounded-full"></div>
+</div>
+<div class="h-20 bg-white rounded-2xl border border-slate-100 flex items-center px-4 justify-between">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 bg-slate-100 rounded-xl"></div>
+<div class="h-4 w-24 bg-slate-100 rounded"></div>
+</div>
+<div class="h-6 w-6 bg-slate-100 rounded-full"></div>
+</div>
+<div class="text-center pt-2">
+<p class="text-sm text-slate-400 font-medium italic">Showing 3 of 30 rooms... (Scroll for more)</p>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-surface-dark/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 ios-bottom-nav">
+<div class="flex justify-around items-center max-w-md mx-auto pt-3 pb-4">
+<button class="flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">home</span>
+<span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">홈</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined text-[26px] text-primary fill-1" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="text-[11px] font-bold text-primary">견사</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">history</span>
+<span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">기록</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">settings</span>
+<span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">설정</span>
+</button>
+</div>
+<div class="flex justify-center pb-2">
+<div class="w-32 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+</div>
+</nav>
+</div>
+</body></html>

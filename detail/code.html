@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Room 101 Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#367d59",
+                        "background-light": "#f8f7f7",
+                        "background-dark": "#22282a",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "Noto Sans", "sans-serif"],
+                        "body": ["Be Vietnam Pro", "Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar hide for cleaner UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#131614] dark:text-gray-100 overflow-x-hidden antialiased">
+<!-- Wrapper for the whole screen -->
+<div class="relative flex min-h-screen w-full flex-col pb-28">
+<!-- Header -->
+<header class="sticky top-0 z-30 flex items-center justify-between bg-background-light/95 dark:bg-background-dark/95 px-4 py-4 backdrop-blur-md transition-colors">
+<button class="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-sm transition-transform active:scale-95 ring-1 ring-black/5 dark:ring-white/10">
+<span class="material-symbols-outlined text-[#131614] dark:text-white">arrow_back</span>
+</button>
+<div class="flex flex-col items-center">
+<h1 class="text-xl font-extrabold tracking-tight text-[#131614] dark:text-white">101호</h1>
+<span class="text-xs font-medium text-primary dark:text-green-400">일반 보호실</span>
+</div>
+<button class="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-sm transition-transform active:scale-95 ring-1 ring-black/5 dark:ring-white/10">
+<span class="material-symbols-outlined text-[#131614] dark:text-white">edit</span>
+</button>
+</header>
+<!-- Stats Section -->
+<section class="px-4 pb-2 pt-2">
+<div class="flex w-full gap-3 overflow-x-auto no-scrollbar">
+<!-- Stat 1: Total -->
+<div class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white dark:bg-gray-800 p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/10">
+<span class="text-2xl font-bold tracking-tight text-primary dark:text-green-400">3</span>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">총 마리수</span>
+</div>
+<!-- Stat 2: Done -->
+<div class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white dark:bg-gray-800 p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/10 opacity-60 grayscale">
+<span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">0</span>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">산책 완료</span>
+</div>
+<!-- Stat 3: Waiting -->
+<div class="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-white dark:bg-gray-800 p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-gradient-to-br from-white to-orange-50/50 dark:from-gray-800 dark:to-orange-900/10">
+<span class="text-2xl font-bold tracking-tight text-orange-500">3</span>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">산책 대기</span>
+</div>
+</div>
+</section>
+<!-- Room Content: Dog List -->
+<main class="flex flex-col gap-4 p-4">
+<!-- Dog Card 1: Bori -->
+<article class="group relative flex flex-col gap-4 rounded-3xl bg-white dark:bg-gray-800 p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-lg">
+<div class="flex items-start justify-between gap-4">
+<!-- Image -->
+<div class="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100 shadow-inner">
+<img alt="Golden retriever dog looking happy" class="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Golden retriever dog looking happy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu3RBmxUMrfqR0II5kOGWLtR_H2kvcI6devyLUavutcZEVtWFMaPYisadn2bG-lI-98cG-XaKLm3Ko6vKpXU6Rf-Moan7JcR0khH-0zvrwuFM4X-DygIMOfPaIvb82hzFOp0WasMelf6MQkjCBQJJd5EP5hfMRKSaAtnOMtqk3IwnbCAxS0FbH44SC_CudqUN4YoJMBo0ocIeqMuMrsu6-cw5uZ1AWPOXtEE53Dv_jNK6UfCPymXVFvL3vqTfC3fS9IzyCJYuk-IY"/>
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1">
+<span class="text-[10px] font-bold text-white tracking-wider">#1203</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">보리 (Bori)</h3>
+<span class="inline-flex items-center rounded-full bg-red-50 dark:bg-red-900/20 px-2.5 py-1 text-xs font-semibold text-red-600 dark:text-red-300 ring-1 ring-inset ring-red-600/10">
+                                주의 필요
+                            </span>
+</div>
+<p class="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">대형견 • 수컷 • 3살</p>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<span>마지막 산책: <strong class="text-gray-600 dark:text-gray-300">20시간 전</strong></span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-[#2d6b4b] active:scale-[0.98]">
+<span class="material-symbols-outlined">pets</span>
+                    산책 시작
+                </button>
+</article>
+<!-- Dog Card 2: Dubu -->
+<article class="group relative flex flex-col gap-4 rounded-3xl bg-white dark:bg-gray-800 p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-lg">
+<div class="flex items-start justify-between gap-4">
+<!-- Image -->
+<div class="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100 shadow-inner">
+<img alt="Small white fluffy dog looking curious" class="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Small white fluffy dog looking curious" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_xdq0IxXyrkLDlb-PHilks7E6namfBtEy0Z--0liPqKDKY58_uZl53uv7uWZfyr19Pk09d1zngQ7-qE1VU5XxxPTVnPYCe7sQNcpLGO-UbbaoGOqOSgr9xTT2biyNY-9imHsRmRC-CjTermwMlU_yfFI49mNY3iBG20FwR74M7wSIOdIy0ND53CS_fhg4Z9OUnepDC-FRCYZMM5d_R4a1BnMq5vtXvYrZjbkMgb17bS0yxQP1BGvc--ucHkje2JB54fIbyhBAdOI"/>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">두부 (Dubu)</h3>
+<span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/20 px-2.5 py-1 text-xs font-semibold text-green-700 dark:text-green-300 ring-1 ring-inset ring-green-600/10">
+                                온순함
+                            </span>
+</div>
+<p class="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">소형견 • 암컷 • 5살</p>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<span>마지막 산책: <strong class="text-gray-600 dark:text-gray-300">1일 전</strong></span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-[#2d6b4b] active:scale-[0.98]">
+<span class="material-symbols-outlined">pets</span>
+                    산책 시작
+                </button>
+</article>
+<!-- Dog Card 3: Choco -->
+<article class="group relative flex flex-col gap-4 rounded-3xl bg-white dark:bg-gray-800 p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-lg">
+<div class="flex items-start justify-between gap-4">
+<!-- Image -->
+<div class="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100 shadow-inner">
+<img alt="Brown medium dog standing in grass" class="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Brown medium dog standing in grass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJE2binylMBHv2s4OJhY8gInK5-8NxtZggim9MNF_4-OEnK6xHocy3VU1CKHB3xsiUmRnMmnza6wI1x6rO-ZUJVVXEoL7K-pGjXh0piiVdoqmKtavi3a8A6kS8KHwwbpdshAUs7fxbyt2r2quih8lymzm7w8bIIWf8eLI7pnbgyAR1CKxoLM6KK7KQZkSq7hvgFENx4-hR5lubjw3HqxIxtdw8_25cAO-2zKVpDse1ZeW6ko9uIKyxC7BtyzbRg8iWFVEIMN_WRM"/>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">초코 (Choco)</h3>
+<span class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-600/10">
+                                활발함
+                            </span>
+</div>
+<p class="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">중형견 • 수컷 • 2살</p>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<span>마지막 산책: <strong class="text-gray-600 dark:text-gray-300">4시간 전</strong></span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-[#2d6b4b] active:scale-[0.98]">
+<span class="material-symbols-outlined">pets</span>
+                    산책 시작
+                </button>
+</article>
+</main>
+<!-- Room Navigation (Floating above bottom nav) -->
+<!-- Placed slightly higher to avoid conflict with bottom nav touches -->
+<div class="fixed bottom-[90px] left-0 right-0 z-20 px-4 pointer-events-none">
+<div class="flex items-center justify-between pointer-events-auto w-full max-w-lg mx-auto">
+<!-- Previous Room -->
+<button class="group flex items-center gap-3 rounded-full bg-white dark:bg-gray-800 py-3 pl-4 pr-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100 dark:ring-gray-700">
+<div class="flex size-8 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_back</span>
+</div>
+<div class="flex flex-col items-start">
+<span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">PREV</span>
+<span class="text-sm font-bold text-[#131614] dark:text-white leading-tight">100호</span>
+</div>
+</button>
+<!-- Next Room -->
+<button class="group flex items-center gap-3 rounded-full bg-white dark:bg-gray-800 py-3 pl-6 pr-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100 dark:ring-gray-700">
+<div class="flex flex-col items-end">
+<span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">NEXT</span>
+<span class="text-sm font-bold text-[#131614] dark:text-white leading-tight">102호</span>
+</div>
+<div class="flex size-8 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-700 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 flex h-[84px] items-start justify-around border-t border-gray-100 bg-white/95 pb-6 pt-3 dark:border-gray-800 dark:bg-[#1a1f21]/95 backdrop-blur-lg shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+<button class="group flex flex-col items-center gap-1.5 p-2 w-16">
+<span class="material-symbols-outlined text-[26px] text-gray-400 transition-colors group-hover:text-primary">home</span>
+<span class="text-[10px] font-semibold text-gray-400 group-hover:text-primary">홈</span>
+</button>
+<button class="group flex flex-col items-center gap-1.5 p-2 w-16">
+<div class="relative">
+<span class="material-symbols-outlined text-[26px] text-primary transition-colors" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#1a1f21]"></span>
+</div>
+<span class="text-[10px] font-semibold text-primary">보호실</span>
+</button>
+<button class="group flex flex-col items-center gap-1.5 p-2 w-16">
+<span class="material-symbols-outlined text-[26px] text-gray-400 transition-colors group-hover:text-primary">calendar_today</span>
+<span class="text-[10px] font-semibold text-gray-400 group-hover:text-primary">일정</span>
+</button>
+<button class="group flex flex-col items-center gap-1.5 p-2 w-16">
+<span class="material-symbols-outlined text-[26px] text-gray-400 transition-colors group-hover:text-primary">person</span>
+<span class="text-[10px] font-semibold text-gray-400 group-hover:text-primary">내 정보</span>
+</button>
+</nav>
+<!-- Decorative gradient fade at bottom to help Nav visibility -->
+<div class="fixed bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-white/80 via-white/40 to-transparent dark:from-[#22282a]/80 dark:via-[#22282a]/40 pointer-events-none"></div>
+</div>
+</body></html>
