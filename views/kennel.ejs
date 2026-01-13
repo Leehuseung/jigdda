@@ -46,17 +46,7 @@
 <body class="bg-background-light text-slate-800 font-display min-h-screen">
     <div class="mx-auto max-w-md min-h-screen bg-background-light relative flex flex-col shadow-2xl">
         <!-- Header -->
-        <header class="sticky top-0 z-50 bg-primary text-white px-5 pt-12 pb-4 rounded-b-3xl shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-                <button onclick="history.back()" class="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
-                    <span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
-                </button>
-                <div class="text-center">
-                    <h1 class="text-xl font-bold tracking-tight">견사 목록</h1>
-                    <p class="text-xs opacity-80 font-medium">방 목록</p>
-                </div>
-                <div class="w-10"></div>
-            </div>
+        <header class="sticky top-0 z-50 bg-primary text-white px-5 pt-8 pb-4 rounded-b-3xl shadow-lg">
             <!-- Progress Bar -->
             <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10">
                 <div class="flex items-end justify-between text-xs mb-1.5 opacity-90 font-medium">
@@ -100,21 +90,18 @@
         <!-- Bottom Navigation -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 ios-bottom-nav">
             <div class="flex justify-around items-center max-w-md mx-auto pt-3 pb-4">
-                <a href="/cages" class="flex flex-col items-center gap-1 group">
+                <a href="/dashboard" class="flex-1 flex flex-col items-center gap-1 group">
                     <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">home</span>
                     <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">홈</span>
                 </a>
-                <button class="flex flex-col items-center gap-1 group">
+                <div class="flex-1 flex flex-col items-center gap-0.5">
                     <span class="material-symbols-outlined text-[26px] text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
                     <span class="text-[11px] font-bold text-primary">견사</span>
-                </button>
-                <a href="/statistics" class="flex flex-col items-center gap-1 group">
+                    <span class="text-[9px] text-primary/70">좌측(싱크대) 견사</span>
+                </div>
+                <a href="/statistics" class="flex-1 flex flex-col items-center gap-1 group">
                     <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">bar_chart</span>
                     <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">통계</span>
-                </a>
-                <a href="/adminjigdda" class="flex flex-col items-center gap-1 group">
-                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">settings</span>
-                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">설정</span>
                 </a>
             </div>
             <div class="flex justify-center pb-2">
@@ -274,10 +261,10 @@
                         <details class="peer w-full" ${isOpen ? 'open' : ''}>
                             <summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
                                 <div class="flex items-center gap-4">
-                                    <div class="flex flex-col items-center justify-center h-12 w-12 ${allWalked ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-100'} rounded-xl border">
+                                    <a href="/kennel/1/room/${cageId}" class="flex flex-col items-center justify-center h-12 w-12 ${allWalked ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-100'} rounded-xl border hover:ring-2 hover:ring-primary/30 transition-all" onclick="event.stopPropagation()">
                                         <span class="text-[9px] font-bold ${allWalked ? 'text-slate-400' : 'text-orange-400'} uppercase">Rm</span>
                                         <span class="text-lg font-bold ${allWalked ? 'text-slate-400' : 'text-orange-700'} -mt-1">${cageId}</span>
-                                    </div>
+                                    </a>
                                     <div>
                                         <h3 class="font-bold ${allWalked ? 'text-slate-600' : 'text-slate-900'} text-base">${roomName}</h3>
                                         <div class="flex items-center gap-2 mt-1">

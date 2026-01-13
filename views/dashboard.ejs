@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>직따 - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#367d59",
+                        "primary-dark": "#2a6245",
+                        "background-light": "#f6f7f7",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    boxShadow: {
+                        "soft": "0 10px 40px -10px rgba(0,0,0,0.08)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .ios-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="bg-background-light text-[#131614] font-display overflow-x-hidden">
+    <div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto bg-background-light pb-24 shadow-2xl">
+        <!-- Header -->
+        <div class="sticky top-0 z-20 bg-background-light/90 backdrop-blur-md px-6 pt-6 pb-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+                        <span class="material-symbols-outlined text-[24px]">pets</span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-primary uppercase tracking-[0.1em]">직따봉</p>
+                        <h2 class="text-xl font-bold leading-tight text-gray-900">내사랑 바둑이</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <div class="px-6 py-4">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 leading-tight">
+                오늘도 <span class="text-primary">산책</span> 가자!
+            </h1>
+        </div>
+
+        <!-- Kennel Cards -->
+        <div class="flex flex-col gap-5 px-6 pb-6">
+            <!-- 1견사 카드 -->
+            <a href="/kennel/1" id="kennel1Card" class="group relative overflow-hidden rounded-2xl bg-white p-5 shadow-soft transition-all hover:shadow-lg active:scale-[0.99]">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex gap-4">
+                        <div class="size-14 rounded-xl bg-gray-100 overflow-hidden shrink-0">
+                            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdLmvKrRmMTOTYDRoMXDMrbtVt6_IVTufyVMEf0zvXX24a7FVfklxE68bqB5wa2H9p4W8edDlwjgacYZQ7wWJU-0VT8Tos8S1B0ruXBSmbJDPz9ig2wWFIPtXEx_9TJu-TQm7-48NSvUGV31eC2fNKKBr_aiKgMzaiilII9dvXgpsv2TG-4MHzb8qfSZ-DNk3AnrkIy7SP8JJmd8awZ-obZT5ibvVqDy1An5NPBIiTaQ0Q0c0dJFK7OWnyf3qHJjfnHggsdJYJ9Ec');"></div>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-xl font-bold text-gray-900">좌측(싱크대) 견사</h3>
+                            <p class="text-sm font-medium text-gray-500">1견사</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center size-8 rounded-full bg-gray-50 text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </div>
+                </div>
+                <!-- Progress -->
+                <div class="space-y-2">
+                    <div class="flex items-end justify-between">
+                        <span id="kennel1Percent" class="text-sm font-semibold text-primary">0% 완료</span>
+                        <span id="kennel1Count" class="text-xs text-gray-400">0/0 마리</span>
+                    </div>
+                    <div class="h-3 w-full rounded-full bg-gray-100 overflow-hidden">
+                        <div id="kennel1Progress" class="h-full rounded-full bg-gradient-to-r from-primary to-[#5CA480] transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                <!-- Status Badge -->
+                <div class="mt-4 flex gap-3">
+                    <span id="kennel1Status" class="inline-flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-500">
+                        <span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
+                        로딩중...
+                    </span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 ios-bottom-nav">
+            <div class="flex justify-around items-center max-w-md mx-auto pt-3 pb-4">
+                <a href="/dashboard" class="flex-1 flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-primary" style="font-variation-settings: 'FILL' 1;">home</span>
+                    <span class="text-[11px] font-bold text-primary">홈</span>
+                </a>
+                <a href="/kennel/1" class="flex-1 flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">pets</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">견사</span>
+                </a>
+                <a href="/statistics" class="flex-1 flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-[26px] text-slate-400 transition-colors group-hover:text-primary">bar_chart</span>
+                    <span class="text-[11px] font-semibold text-slate-400 transition-colors group-hover:text-primary">통계</span>
+                </a>
+            </div>
+            <div class="flex justify-center pb-2">
+                <div class="w-32 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        async function loadKennelStats() {
+            try {
+                const res = await fetch('/api/kennel/1/stats');
+                const data = await res.json();
+
+                const { total, walked, percent } = data;
+
+                document.getElementById('kennel1Percent').textContent = `${percent}% 완료`;
+                document.getElementById('kennel1Count').textContent = `${walked}/${total} 마리`;
+                document.getElementById('kennel1Progress').style.width = `${percent}%`;
+
+                // 상태 뱃지 업데이트
+                const statusEl = document.getElementById('kennel1Status');
+                if (percent === 100) {
+                    statusEl.innerHTML = `
+                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        완료!
+                    `;
+                    statusEl.className = 'inline-flex items-center gap-1.5 rounded-lg bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700';
+                } else if (percent >= 50) {
+                    statusEl.innerHTML = `
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        진행중
+                    `;
+                    statusEl.className = 'inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700';
+                } else if (percent > 0) {
+                    statusEl.innerHTML = `
+                        <span class="material-symbols-outlined text-[14px]">directions_walk</span>
+                        시작됨
+                    `;
+                    statusEl.className = 'inline-flex items-center gap-1.5 rounded-lg bg-yellow-50 px-2.5 py-1 text-xs font-semibold text-yellow-700';
+                } else {
+                    statusEl.innerHTML = `
+                        <span class="material-symbols-outlined text-[14px]">schedule</span>
+                        대기중
+                    `;
+                    statusEl.className = 'inline-flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-500';
+                }
+            } catch (err) {
+                console.error('Error loading stats:', err);
+            }
+        }
+
+        // 초기 로드
+        loadKennelStats();
+    </script>
+</body>
+</html>

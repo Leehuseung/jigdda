@@ -50,6 +50,11 @@ app.get('/', (req, res) => {
     res.render('index', { dogs });
 });
 
+// Dashboard 페이지
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard');
+});
+
 // dogs API (산책시간 포함)
 app.get('/dogs', (req, res) => {
     const dogs = getDogs();
@@ -341,6 +346,65 @@ app.get('/kennel/:id', (req, res) => {
     res.render('kennel', { cageId });
 });
 
+// Room 상세 페이지
+app.get('/kennel/:kennelId/room/:roomId', (req, res) => {
+    const roomId = parseInt(req.params.roomId, 10);
+
+    // 방 번호 유효성 검사 (1-60만 허용)
+    if (isNaN(roomId) || roomId < 1 || roomId > 60) {
+        return res.status(404).send(`
+            <!DOCTYPE html>
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>잘못된 접근</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+                        background: #f6f8fa;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                    }
+                    .error-container {
+                        text-align: center;
+                        padding: 40px;
+                        background: #fff;
+                        border-radius: 16px;
+                        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                        max-width: 400px;
+                    }
+                    h1 { font-size: 48px; color: #e53935; margin: 0 0 16px 0; }
+                    p { font-size: 18px; color: #666; margin: 0 0 24px 0; }
+                    a {
+                        display: inline-block;
+                        padding: 12px 24px;
+                        background: #367d59;
+                        color: #fff;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="error-container">
+                    <h1>404</h1>
+                    <p>잘못된 페이지 접근입니다</p>
+                    <a href="/kennel/1">견사 목록으로 돌아가기</a>
+                </div>
+            </body>
+            </html>
+        `);
+    }
+
+    res.render('room', { roomId });
+});
+
 // 견사 리스트 페이지
 app.get('/cages', (req, res) => {
     res.render('cages');
@@ -468,6 +532,57 @@ app.get('/api/cages', (req, res) => {
         cages,
         hasMore: endId < maxCages,
         nextPage: endId < maxCages ? page + 1 : null
+    });
+});
+
+// 견사(kennel)별 산책 통계 API
+app.get('/api/kennel/:id/stats', (req, res) => {
+    const kennelId = parseInt(req.params.id, 10);
+
+    // 현재는 kennel 1만 지원 (1~60 견사 전체)
+    if (kennelId !== 1) {
+        return res.json({ total: 0, walked: 0, percent: 0 });
+    }
+
+    const now = new Date();
+    const todayString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    let totalDogs = 0;
+    let walkedDogs = 0;
+
+    // 1~60 견사의 모든 강아지 확인
+    for (let cageId = 1; cageId <= 60; cageId++) {
+        const dogsFilePath = path.join(cageDogsDir, `cage_${cageId}_dogs.json`);
+
+        if (!fs.existsSync(dogsFilePath)) continue;
+
+        try {
+            const dogs = JSON.parse(fs.readFileSync(dogsFilePath, 'utf-8'));
+            totalDogs += dogs.length;
+
+            // 각 강아지의 오늘 산책 여부 확인
+            for (const dog of dogs) {
+                const walksFilePath = path.join(dogWalksDir, `cage_${cageId}_dog_${dog.id}_walks.json`);
+
+                if (fs.existsSync(walksFilePath)) {
+                    const walks = JSON.parse(fs.readFileSync(walksFilePath, 'utf-8'));
+                    const todayWalk = walks.find(w => w.time.startsWith(todayString));
+                    if (todayWalk) {
+                        walkedDogs++;
+                    }
+                }
+            }
+        } catch (err) {
+            console.error(`Error reading cage ${cageId}:`, err);
+        }
+    }
+
+    const percent = totalDogs > 0 ? Math.round((walkedDogs / totalDogs) * 100) : 0;
+
+    res.json({
+        total: totalDogs,
+        walked: walkedDogs,
+        percent: percent
     });
 });
 
