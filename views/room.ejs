@@ -74,8 +74,9 @@
         <div class="fixed bottom-[90px] left-0 right-0 z-20 px-4 pointer-events-none">
             <div class="flex items-center justify-between pointer-events-auto w-full max-w-lg mx-auto">
                 <!-- Previous Room -->
-                <a href="/kennel/1/room/<%= Math.max(1, roomId - 1) %>"
-                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-4 pr-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100 <%= roomId <= 1 ? 'opacity-40 pointer-events-none' : '' %>">
+                <% if (roomId > 1) { %>
+                <a href="/kennel/1/room/<%= roomId - 1 %>"
+                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-4 pr-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100">
                     <div class="flex size-8 items-center justify-center rounded-full bg-gray-50 group-hover:bg-primary/10 transition-colors">
                         <span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_back</span>
                     </div>
@@ -84,9 +85,13 @@
                         <span class="text-sm font-bold text-[#131614] leading-tight"><%= roomId - 1 %>호</span>
                     </div>
                 </a>
+                <% } else { %>
+                <div class="w-24"></div>
+                <% } %>
                 <!-- Next Room -->
-                <a href="/kennel/1/room/<%= Math.min(60, roomId + 1) %>"
-                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-6 pr-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100 <%= roomId >= 60 ? 'opacity-40 pointer-events-none' : '' %>">
+                <% if (roomId < 60) { %>
+                <a href="/kennel/1/room/<%= roomId + 1 %>"
+                   class="group flex items-center gap-3 rounded-full bg-white py-3 pl-6 pr-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-105 active:scale-95 ring-1 ring-gray-100">
                     <div class="flex flex-col items-end">
                         <span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">NEXT</span>
                         <span class="text-sm font-bold text-[#131614] leading-tight"><%= roomId + 1 %>호</span>
@@ -95,6 +100,9 @@
                         <span class="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-lg">arrow_forward</span>
                     </div>
                 </a>
+                <% } else { %>
+                <div class="w-24"></div>
+                <% } %>
             </div>
         </div>
 
