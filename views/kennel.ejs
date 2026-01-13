@@ -37,10 +37,8 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        summary { list-style: none; }
-        summary::-webkit-details-marker { display: none; }
         .ios-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
-        details[open] .expand-icon { transform: rotate(180deg); }
+        .rotate-180 { transform: rotate(180deg); }
     </style>
 </head>
 <body class="bg-background-light text-slate-800 font-display min-h-screen">
@@ -254,83 +252,74 @@
                     <div class="room-card group relative rounded-2xl bg-white shadow-soft border border-slate-100 overflow-hidden transition-all hover:shadow-lg ${allWalked ? 'opacity-70' : ''}"
                          data-cage-id="${cageId}" data-all-walked="${allWalked}">
                         <div class="absolute left-0 top-0 bottom-0 w-1.5 ${allWalked ? 'bg-slate-300' : 'bg-accent-warning'}"></div>
-                        <details class="peer w-full" ${isOpen ? 'open' : ''}>
-                            <summary class="flex cursor-pointer items-center justify-between p-4 pl-5 select-none">
-                                <div class="flex items-center gap-4">
-                                    <a href="/kennel/1/room/${cageId}" class="flex flex-col items-center justify-center h-12 w-12 ${allWalked ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-100'} rounded-xl border hover:ring-2 hover:ring-primary/30 transition-all" onclick="event.stopPropagation()">
-                                        <span class="text-[9px] font-bold ${allWalked ? 'text-slate-400' : 'text-orange-400'} uppercase">Rm</span>
-                                        <span class="text-lg font-bold ${allWalked ? 'text-slate-400' : 'text-orange-700'} -mt-1">${cageId}</span>
-                                    </a>
-                                    <div>
-                                        <h3 class="font-bold ${allWalked ? 'text-slate-600' : 'text-slate-900'} text-base">${roomName}</h3>
-                                        <div class="flex items-center gap-2 mt-1">
-                                            ${allWalked ? `
-                                                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
-                                                    <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span> 완료
-                                                </span>
-                                            ` : `
-                                                <div class="flex -space-x-2">${dogThumbs}</div>
-                                                <span class="text-xs ${walkedDogs > 0 ? 'text-primary' : 'text-orange-600'} font-medium">
-                                                    ${walkedDogs}/${dogs.length} 산책
-                                                </span>
-                                            `}
-                                        </div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between p-4 pl-5">
+                            <a href="/kennel/1/room/${cageId}" class="flex items-center gap-4 flex-1">
+                                <div class="flex flex-col items-center justify-center h-12 w-12 ${allWalked ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-100'} rounded-xl border hover:ring-2 hover:ring-primary/30 transition-all">
+                                    <span class="text-[9px] font-bold ${allWalked ? 'text-slate-400' : 'text-orange-400'} uppercase">Rm</span>
+                                    <span class="text-lg font-bold ${allWalked ? 'text-slate-400' : 'text-orange-700'} -mt-1">${cageId}</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold ${allWalked ? 'text-slate-600' : 'text-slate-900'} text-base">${roomName}</h3>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        ${allWalked ? `
+                                            <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                                                <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span> 완료
+                                            </span>
+                                        ` : `
+                                            <div class="flex -space-x-2">${dogThumbs}</div>
+                                            <span class="text-xs ${walkedDogs > 0 ? 'text-primary' : 'text-orange-600'} font-medium">
+                                                ${walkedDogs}/${dogs.length} 산책
+                                            </span>
+                                        `}
                                     </div>
                                 </div>
-                                <span class="material-symbols-outlined expand-icon text-slate-400 transition-transform duration-300">expand_more</span>
-                            </summary>
-                            <div class="border-t border-slate-100 bg-slate-50/50 p-3 space-y-2">
-                                ${dogs.map(dog => {
-                                    const status = walkStatus[dog.id] || { walked: false };
-                                    const imgUrl = `${S3_BASE_URL}/cage_${cageId}_dog_${dog.id}_thumb.jpeg`;
-                                    const dogNameEscaped = escapeHtml(dog.name);
+                            </a>
+                            <button class="expand-btn flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 transition-colors"
+                                    data-cage-id="${cageId}">
+                                <span class="material-symbols-outlined expand-icon text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}">expand_more</span>
+                            </button>
+                        </div>
+                        <!-- Expandable Content -->
+                        <div class="expand-content border-t border-slate-100 bg-slate-50/50 p-3 space-y-2 ${isOpen ? '' : 'hidden'}">
+                            ${dogs.map(dog => {
+                                const status = walkStatus[dog.id] || { walked: false };
+                                const imgUrl = `${S3_BASE_URL}/cage_${cageId}_dog_${dog.id}_thumb.jpeg`;
+                                const dogNameEscaped = escapeHtml(dog.name);
 
-                                    return `
-                                        <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
-                                            <div class="flex items-center gap-3">
-                                                <img src="${imgUrl}"
-                                                     onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
-                                                     class="w-12 h-12 rounded-lg object-cover bg-slate-200">
-                                                <div>
-                                                    <p class="font-bold text-slate-900 leading-tight">${dogNameEscaped}</p>
-                                                    ${status.walked ? `
-                                                        <p class="text-xs text-green-600 font-medium">${status.walkTime} 산책 완료</p>
-                                                    ` : `
-                                                        <p class="text-xs text-slate-500">산책 대기</p>
-                                                    `}
-                                                </div>
+                                return `
+                                    <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
+                                        <div class="flex items-center gap-3">
+                                            <img src="${imgUrl}"
+                                                 onerror="this.onerror=null; this.src='${S3_BASE_URL}/0_thumb.jpeg'"
+                                                 class="w-12 h-12 rounded-lg object-cover bg-slate-200">
+                                            <div>
+                                                <p class="font-bold text-slate-900 leading-tight">${dogNameEscaped}</p>
+                                                ${status.walked ? `
+                                                    <p class="text-xs text-green-600 font-medium">${status.walkTime} 산책 완료</p>
+                                                ` : `
+                                                    <p class="text-xs text-slate-500">산책 대기</p>
+                                                `}
                                             </div>
-                                            ${!status.walked ? `
-                                                <button class="walk-btn bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-1 active:scale-95 transition-transform"
-                                                        data-cage-id="${cageId}"
-                                                        data-dog-id="${dog.id}"
-                                                        data-dog-name="${dogNameEscaped}">
-                                                    <span class="material-symbols-outlined text-[18px]">play_arrow</span>
-                                                    산책
-                                                </button>
-                                            ` : `
-                                                <span class="material-symbols-outlined text-green-500 text-[24px]">check_circle</span>
-                                            `}
                                         </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </details>
+                                        ${!status.walked ? `
+                                            <button class="walk-btn bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-1 active:scale-95 transition-transform"
+                                                    data-cage-id="${cageId}"
+                                                    data-dog-id="${dog.id}"
+                                                    data-dog-name="${dogNameEscaped}">
+                                                <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                                산책
+                                            </button>
+                                        ` : `
+                                            <span class="material-symbols-outlined text-green-500 text-[24px]">check_circle</span>
+                                        `}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
             }).join('');
-
-            // details toggle 이벤트 리스너 추가
-            container.querySelectorAll('details').forEach(details => {
-                details.addEventListener('toggle', (e) => {
-                    const cageId = parseInt(details.closest('.room-card').dataset.cageId);
-                    if (details.open) {
-                        openCageIds.add(cageId);
-                    } else {
-                        openCageIds.delete(cageId);
-                    }
-                });
-            });
         }
 
         // 산책 시작
@@ -393,16 +382,36 @@
             });
         }
 
-        // 이벤트 위임: 산책 버튼 클릭
+        // 이벤트 위임: 산책 버튼 및 확장 버튼 클릭
         document.getElementById('roomList').addEventListener('click', (e) => {
-            const btn = e.target.closest('.walk-btn');
-            if (!btn) return;
+            // 산책 버튼 클릭
+            const walkBtn = e.target.closest('.walk-btn');
+            if (walkBtn) {
+                const cageId = parseInt(walkBtn.dataset.cageId);
+                const dogId = walkBtn.dataset.dogId;
+                const dogName = walkBtn.dataset.dogName;
+                startWalk(cageId, dogId, dogName);
+                return;
+            }
 
-            const cageId = parseInt(btn.dataset.cageId);
-            const dogId = btn.dataset.dogId;
-            const dogName = btn.dataset.dogName;
+            // 확장 버튼 클릭
+            const expandBtn = e.target.closest('.expand-btn');
+            if (expandBtn) {
+                const cageId = parseInt(expandBtn.dataset.cageId);
+                const card = expandBtn.closest('.room-card');
+                const content = card.querySelector('.expand-content');
+                const icon = expandBtn.querySelector('.expand-icon');
 
-            startWalk(cageId, dogId, dogName);
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.classList.add('rotate-180');
+                    openCageIds.add(cageId);
+                } else {
+                    content.classList.add('hidden');
+                    icon.classList.remove('rotate-180');
+                    openCageIds.delete(cageId);
+                }
+            }
         });
 
         // 필터 탭 클릭
