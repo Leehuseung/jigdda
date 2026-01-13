@@ -546,10 +546,12 @@ app.get('/api/kennel/:id/stats', (req, res) => {
         return res.json({ total: 0, walked: 0, percent: 0 });
     }
 
+    // 한국 시간대로 오늘 날짜 계산
     const now = new Date();
-    const todayString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000)); // UTC+9
+    const todayString = `${koreaTime.getUTCFullYear()}-${String(koreaTime.getUTCMonth() + 1).padStart(2, '0')}-${String(koreaTime.getUTCDate()).padStart(2, '0')}`;
 
-    console.log('[Stats API] Server todayString:', todayString);
+    console.log('[Stats API] Korea todayString:', todayString);
 
     let totalDogs = 0;
     let walkedDogs = 0;
