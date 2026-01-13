@@ -549,6 +549,8 @@ app.get('/api/kennel/:id/stats', (req, res) => {
     const now = new Date();
     const todayString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
+    console.log('[Stats API] Server todayString:', todayString);
+
     let totalDogs = 0;
     let walkedDogs = 0;
 
@@ -569,6 +571,10 @@ app.get('/api/kennel/:id/stats', (req, res) => {
 
                 if (fs.existsSync(walksFilePath)) {
                     const walks = JSON.parse(fs.readFileSync(walksFilePath, 'utf-8'));
+                    // 첫번째 cage의 첫번째 dog만 샘플 로그
+                    if (cageId === 1 && dog.id === dogs[0].id && walks.length > 0) {
+                        console.log('[Stats API] Sample walk time:', walks[walks.length - 1].time);
+                    }
                     const todayWalk = walks.find(w => w.time.startsWith(todayString));
                     if (todayWalk) {
                         walkedDogs++;
